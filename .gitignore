@@ -28,6 +28,7 @@ Thumbs.db
 *.booproj
 *.svd
 *.sln.iml
+.vs/
 
 # Crash logs
 sysinfo.txt
