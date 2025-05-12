@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerController : MyMonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [SerializeField] float _moveSpeed;
     public float MoveSpeed
