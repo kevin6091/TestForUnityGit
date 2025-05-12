@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MyMonoBehaviour
 {
     [SerializeField] float _moveSpeed;
     public float MoveSpeed
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
+        StartCoroutine("asdf");
     }
 
     void OnMoveKey(bool w, bool a, bool s, bool d)
