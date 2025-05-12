@@ -6,23 +6,23 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour
 {
-    static Managers s_instance;
-    public static Managers Instance
-    {
-        get { Init(); return s_instance; }
-    }
+    private static Managers s_instance;
+    private InputManager _input = new InputManager();
+    private PoolManager _pool = new PoolManager();
+    private ResourceManager _resource = new ResourceManager();
+    private TileManager _tile = new TileManager();
+    private PathManager _path = new PathManager();
+    private SceneManagerEx _scene = new SceneManagerEx();
+    private SoundManager _sound = new SoundManager();
 
-    InputManager _input = new InputManager();
-    public static InputManager Input
-    {
-        get { return Instance._input; }
-    }
-
-    ResourceManager _resource = new ResourceManager();
-    public static ResourceManager Resource
-    {
-        get { return Instance._resource; }
-    }
+    public static Managers Instance { get { Init(); return s_instance; } }
+    public static InputManager Input { get { return Instance._input; } }
+    public static PoolManager Pool { get { return Instance._pool; } }
+    public static ResourceManager Resource { get { return Instance._resource; } }
+    public static TileManager Tile { get { return Instance._tile; } }
+    public static PathManager Path { get { return Instance._path; } }
+    public static SceneManagerEx Scene { get { return Instance._scene; } }
+    public static SoundManager Sound { get { return Instance._sound; } } 
 
     void Start()
     {
@@ -32,14 +32,15 @@ public class Managers : MonoBehaviour
     void Update()
     {
         _input.OnUpdate();
+        _path.OnUpdate();
     }
 
     static void Init()
     {
-        if(null == s_instance)
+        if (null == s_instance)
         {
             GameObject gameobject = GameObject.Find("@Managers");
-            if(null == gameobject)
+            if (null == gameobject)
             {
                 gameobject = new GameObject { name = "@Managers" };
                 gameobject.AddComponent<Managers>();
@@ -47,6 +48,26 @@ public class Managers : MonoBehaviour
 
             DontDestroyOnLoad(gameobject);
             s_instance = gameobject.GetComponent<Managers>();
+
+            /* 자식 매너지 초기화  */
+            s_instance.InitChilds();
+            /* End */
         }
+    }
+
+    private void InitChilds()
+    {
+        _tile.Init(new Vector2Int(100, 100));
+        _sound.Init();
+        _pool.Init();
+    }
+
+    static public void Clear()
+    {
+        Sound.Clear();
+        Input.Clear();
+        Scene.Clear();
+        //  UI.Clear();
+        Pool.Clear();
     }
 }

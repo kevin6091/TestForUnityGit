@@ -1,24 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class ResourceManager
 {
     public T Load<T>(string path) where T : Object
     {
+        if (typeof(T) == typeof(GameObject))
+        {
+            string name = path;
+            int index = name.LastIndexOf('/');
+            if (index >= 0)
+                name = name.Substring(index + 1);
+
+            GameObject gameObject = Managers.Pool.GetOriginal(name);
+            if (gameObject != null)
+                return gameObject as T;
+        }
+
         return Resources.Load<T>(path);
     }
 
     public GameObject Instantiate(string path, Transform parent = null)
     {
-        GameObject prefab = Load<GameObject>($"Prefabs/{path}");
-        if(null == prefab)
+        GameObject original = Load<GameObject>($"Prefabs/{path}");
+        if (null == original)
         {
             Debug.Log($"Failed to load prefab : {path}");
             return null;
         }
 
-        return Object.Instantiate(prefab, parent);
+        if(original.GetComponent<Poolable>() != null)
+            return Managers.Pool.Pop(original, parent).gameObject;
+
+        GameObject gameObject = Object.Instantiate(original, parent);
+        gameObject.name = original.name;
+
+        return gameObject;
     }
 
     public void Destroy(GameObject gameObject, float time)
@@ -26,6 +45,13 @@ public class ResourceManager
         if (null == gameObject)
         {
             Debug.Log($"Failed to destroy gameobject : {gameObject.name}");
+            return;
+        }
+
+        Poolable poolable = gameObject.GetComponent<Poolable>();
+        if (poolable != null)
+        {
+            Managers.Pool.Push(poolable);
             return;
         }
 
