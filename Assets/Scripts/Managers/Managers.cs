@@ -7,22 +7,16 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {
     static Managers s_instance;
-    public static Managers Instance
-    {
-        get { Init(); return s_instance; }
-    }
+    public static Managers Instance { get { Init(); return s_instance; } }
 
     InputManager _input = new InputManager();
-    public static InputManager Input
-    {
-        get { return Instance._input; }
-    }
-
     ResourceManager _resource = new ResourceManager();
-    public static ResourceManager Resource
-    {
-        get { return Instance._resource; }
-    }
+    UIManager _ui = new UIManager();
+
+    public static InputManager Input { get { return Instance._input; } }
+    public static ResourceManager Resource { get { return Instance._resource; } }
+    public static UIManager UI { get { return Instance._ui; } }
+
 
     void Start()
     {

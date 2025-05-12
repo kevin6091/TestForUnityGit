@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class ComponentsHelper
 {
-    public static bool LoadComponents<T>(GameObject gameObject, ref Dictionary<string, Component> components) where T : Component
+    public static bool LoadComponents<T>(this GameObject gameObject, ref Dictionary<string, Component> components) where T : Component
     {
         T component = gameObject.GetComponent<T>();
         if(component) 

@@ -22,11 +22,12 @@ public class PlayerController : MonoBehaviour
     {
         Managers.Input.MoveKeyAction -= OnMoveKey;
         Managers.Input.MoveKeyAction += OnMoveKey;
+
+        Managers.UI.ShowPopupUI<UI_Button>("UI_Button");
     }
 
     void Update()
     {
-        StartCoroutine("asdf");
     }
 
     void OnMoveKey(bool w, bool a, bool s, bool d)
