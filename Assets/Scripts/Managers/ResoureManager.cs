@@ -31,7 +31,9 @@ public class ResourceManager
             return null;
         }
 
-        if(original.GetComponent<Poolable>() != null)
+        Poolable poolable = Managers.Pool.TryGetOrCachePoolable(original);
+        if (null != poolable)
+        //  if(original.GetComponent<Poolable>() != null)
             return Managers.Pool.Pop(original, parent).gameObject;
 
         GameObject gameObject = Object.Instantiate(original, parent);
@@ -48,12 +50,18 @@ public class ResourceManager
             return;
         }
 
-        Poolable poolable = gameObject.GetComponent<Poolable>();
-        if (poolable != null)
+        Poolable poolable = Managers.Pool.TryGetOrCachePoolable(gameObject);
+        if (null != poolable)
         {
             Managers.Pool.Push(poolable);
-            return;
         }
+
+        //Poolable poolable = gameObject.GetComponent<Poolable>();
+        //if (poolable != null)
+        //{
+        //    Managers.Pool.Push(poolable);
+        //    return;
+        //}
 
         Object.Destroy(gameObject);
     }

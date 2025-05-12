@@ -68,7 +68,7 @@ public class PoolManager
     #endregion
 
     Dictionary<string, Pool> _pool = new Dictionary<string, Pool>();
-    HashSet<string> _poolableCache = new HashSet<string>();
+    Dictionary<string, Poolable> _poolableCache = new Dictionary<string, Poolable>();
     HashSet<string> _nonPoolableCache = new HashSet<string>();
     Transform _root;
 
@@ -81,14 +81,23 @@ public class PoolManager
         }
     }
 
-    public bool IsPoolable(GameObject gameObject)
+    public Poolable TryGetOrCachePoolable(GameObject gameObject)
     {
-        if (_poolableCache.Contains(gameObject.name))
-            return true;
-        else if (_nonPoolableCache.Contains(gameObject.name))
-            return false;
+        if (_nonPoolableCache.Contains(gameObject.name))
+            return null;
+
+        Poolable poolable;
+        _poolableCache.TryGetValue(gameObject.name, out poolable);
+        if (null != poolable)
+            return poolable;
+
+        poolable = gameObject.GetComponent<Poolable>();
+        if (null != poolable)
+            _poolableCache.Add(gameObject.name, poolable);
         else
-            return null != gameObject.GetComponent<Poolable>();
+            _nonPoolableCache.Add(gameObject.name);
+
+        return poolable;
     }
 
     public void CreatePool(GameObject original, int count = 5)
