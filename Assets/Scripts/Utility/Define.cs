@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Layer
+    {
+        Wall = 8,
+        Floor,
+        Block,
+        Monster,
+    }
+
     public enum Scene
     {
         Unknown,    //  Default
@@ -29,10 +37,14 @@ public class Define
     {
         Press,
         Click,
+        WheelUp,
+        WheelDown,
     }
 
     public enum CameraMode
     {
         QuarterView,
+        TopView,
+        Free,
     }
 }

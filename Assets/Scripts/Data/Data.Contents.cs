@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace Data
+{
 #region Stat
 
 [Serializable]
@@ -29,3 +30,4 @@ public struct StatData : ILoader<int, Stat>
 }
 
 #endregion
+}
