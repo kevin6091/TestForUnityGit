@@ -15,6 +15,7 @@ public class SceneManagerEx
 
             return _currentScene;
         }
+        private set { _currentScene = value; }
     }
 
     public void LoadScene(Define.Scene type)
@@ -34,6 +35,6 @@ public class SceneManagerEx
     public void Clear()
     {
         CurrentScene.Clear();
-        _currentScene = null;
+        CurrentScene = null;
     }
 }

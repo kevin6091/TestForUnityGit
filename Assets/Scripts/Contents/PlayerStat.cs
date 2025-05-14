@@ -19,6 +19,7 @@ public class PlayerStat : Stat
         Attack = 10;
         Defense = 5;
         MoveSpeed = 5.0f;
+        RotateSpeed = 500.0f;
         Exp = 0;
         Gold = 0;
     }

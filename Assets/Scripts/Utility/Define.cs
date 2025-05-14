@@ -36,9 +36,9 @@ public class Define
     public enum MouseEvent
     {
         Press,
+        PointerDown,
+        PointerUp,
         Click,
-        WheelUp,
-        WheelDown,
     }
 
     public enum CameraMode
