@@ -62,7 +62,7 @@ public class CameraController : MonoBehaviour
                 _coInterpolateFov = null;
             }
 
-            _coInterpolateFov = StartCoroutine(Co_InterpolateFov(90f, 3f));
+            _coInterpolateFov = StartCoroutine(Co_InterpolateFov(90f, 0.5f));
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -73,7 +73,18 @@ public class CameraController : MonoBehaviour
                 _coInterpolateFov = null;
             }
 
-            _coInterpolateFov = StartCoroutine(Co_InterpolateFov(30f, 3f));
+            _coInterpolateFov = StartCoroutine(Co_InterpolateFov(30f, 0.5f));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (_coInterpolateFov != null)
+            {
+                StopCoroutine(_coInterpolateFov);
+                _coInterpolateFov = null;
+            }
+
+            _coInterpolateFov = StartCoroutine(Co_InterpolateFov(60f, 0.5f));
         }
     }
 

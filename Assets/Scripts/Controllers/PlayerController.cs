@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -6,67 +7,43 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : CreatureController
 {
     PlayerStat _stat = null;
-    Vector3 _destPos = new Vector3();
+    IKController _IKController = null;
+    Animator _anim = null;
+    Stacker _stacker = null;
+    bool _stopSkill = false;
 
-    GameObject _lockTarget = null;
-
-    public enum PlayerState
+    public override void Init()
     {
-        Die,
-        Moving,
-        Idle,
-        Skill,
-    }
+        _stat = GetComponent<PlayerStat>();
+        _IKController = GetComponent<IKController>();
+        _anim = GetComponent<Animator>();
+        _stacker = GetComponentInChildren<Stacker>();
+        _stateMachine = new StateMachine();
 
-    [SerializeField]
-    PlayerState _state = PlayerState.Idle;
+        StateMachine.RegisterState<StateIdlePlayer>(Define.State.Idle, this);
+        StateMachine.RegisterState<StateMovePlayer>(Define.State.Move, this);
 
-    public PlayerState State
-    {
-        get { return _state; }
-        set
+        State = Define.State.Idle;
+
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.MouseAction += OnMouseEvent;
+
+        //  Sync Hand Socket Stacker
+        for (int i = 0; i < transform.childCount; ++i)
         {
-            _state = value;
-
-            Animator anim = GetComponent<Animator>();
-            switch (_state)
+            if (transform.GetChild(i).name == "Stacker")
             {
-                case PlayerState.Die:
-                    break;
-                case PlayerState.Moving:
-                    anim.CrossFade("RUN", 0.25f);
-                    break;
-                case PlayerState.Idle:
-                    anim.CrossFade("WAIT", 0.25f);
-                    break;
-                case PlayerState.Skill:
-                    anim.CrossFade("ATTACK", 0.25f, -1, 0f);
-                    break;
+                _IKController.LeftHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().LeftHandSocket;
+                _IKController.RightHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().RightHandSocket;
+                break;
             }
         }
     }
 
-    void Start()
-    {
-        _stat = GetComponent<PlayerStat>();
-
-        //  Todo : 추 후 조작관련 기능 추가
-        //Managers.Input.MoveKeyAction -= OnMoveKey;
-        //Managers.Input.MoveKeyAction += OnMoveKey;
-        Managers.Input.MouseAction -= OnMouseEvent;
-        Managers.Input.MouseAction += OnMouseEvent;
-    }
-
-
-    void UpdateDie()
-    {
-
-    }
-
-    void UpdateMoving()
+    protected override void UpdateMoving()
     {
         Vector3 dir;
         float dist;
@@ -80,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
             if ((_destPos - transform.position).magnitude <= 1f)
             {
-                State = PlayerState.Skill;
+                State = Define.State.Skill;
                 return;
             }
         }
@@ -92,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
 
         if (dist < /*0.0001f*/ 0.1f)
-            State = PlayerState.Idle;
+            State = Define.State.Idle;
 
         else
         {
@@ -106,7 +83,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1f, LayerMask.GetMask("Block")))
             {
                 if (Input.GetMouseButton(0) == false)
-                    State = PlayerState.Idle;
+                    State = Define.State.Idle;
                 return;
             }
 
@@ -114,50 +91,6 @@ public class PlayerController : MonoBehaviour
 
             //  Rotate
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
-        }
-    }
-
-    void UpdateIdle()
-    {
-    }
-
-    void UpdateSkill()
-    {
-        if(_lockTarget != null)
-        {
-            Vector3 dir = _lockTarget.transform.position - transform.position;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
-        }
-    }
-
-    void OnHitEvent()
-    {
-        if(_stopSkill)
-        {
-            State = PlayerState.Idle;
-        }
-        else
-        {
-            State = PlayerState.Skill;
-        }
-    }
-
-    void Update()
-    {
-        switch (State)
-        {
-            case PlayerState.Die:
-                UpdateDie();
-                break;
-            case PlayerState.Moving:
-                UpdateMoving();
-                break;
-            case PlayerState.Idle:
-                UpdateIdle();
-                break;
-            case PlayerState.Skill:
-                UpdateSkill();
-                break;
         }
     }
 
@@ -188,22 +121,22 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), Time.deltaTime * _stat.RotateSpeed);
         }
 
-        State = PlayerState.Moving;
+        State = Define.State.Move;
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
         switch (State)
         {
-            case PlayerState.Die:
+            case Define.State.Die:
                 break;
-            case PlayerState.Moving:
+            case Define.State.Move:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Idle:
+            case Define.State.Idle:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Skill:
+            case Define.State.Skill:
                 OnMouseEvent_Skill(evt);
                 break;
         }
@@ -223,7 +156,7 @@ public class PlayerController : MonoBehaviour
             case Define.MouseEvent.PointerDown:
                 if (isRaycastHit)
                 {
-                    _destPos = hit.point; State = PlayerState.Moving;
+                    _destPos = hit.point; State = Define.State.Move;
                     _stopSkill = false;
 
                     if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
@@ -247,12 +180,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    bool _stopSkill = false;
     void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
         if(evt == Define.MouseEvent.PointerUp)
         {
             _stopSkill = true;
         }
+    }
+
+    public void OnKeyboard()
+    {
+        State curState = StateMachine.CurState;
+        if (curState is IKeyHandler == true)
+        {
+            IKeyHandler keyHandler = (IKeyHandler)curState;
+            keyHandler.OnKeyboard();
+        }
+    }
+
+    public void PlayAnim(string name)
+    {
+        _anim.Play(name);
+    }
+
+    public void CrossfadeAnim(string name, float time)
+    {
+        _anim.CrossFade(name, time);
+    }
+
+    public void LeanStacker(Quaternion targetRotation)
+    {
+        StartCoroutine(_stacker.Co_Lean(targetRotation));
     }
 }
