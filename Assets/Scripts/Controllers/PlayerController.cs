@@ -53,13 +53,14 @@ public class PlayerController : MonoBehaviour
     {
         _stat = GetComponent<PlayerStat>();
 
-        //  Todo : 추 후 조작관련 기능 추가
-        //Managers.Input.MoveKeyAction -= OnMoveKey;
-        //Managers.Input.MoveKeyAction += OnMoveKey;
-        Managers.Input.MouseActions -= OnMouseEvent;
-        Managers.Input.MouseActions += OnMouseEvent;
+        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] -= OnMouseEvent;
+        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] += OnMouseEvent;
+        //
+        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] -= UpdateIdle;
+        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] += UpdateIdle;
 
-        Managers.Input.TouchActions[(int)Define.TouchEvent.Drag] += UpdateIdle;
+        Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] -= JoyStickMove;
+        Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] += JoyStickMove;
     }
 
 
@@ -117,6 +118,17 @@ public class PlayerController : MonoBehaviour
             //  Rotate
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
         }
+    }
+
+    void JoyStickMove(object[] objects, uint count)
+    {
+        Vector3 dir = ((Vector3)objects[0]).normalized;
+
+        dir = new Vector3(dir.x, 0.0f, dir.y);
+
+        NavMeshAgent nma = GetComponent<NavMeshAgent>();
+        nma.Move(dir * Time.deltaTime * _stat.MoveSpeed);
+        transform.rotation = Quaternion.LookRotation(dir);
     }
 
     void UpdateIdle()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Define
+public class Define
 {
     public enum Layer
     {
@@ -38,7 +38,6 @@ namespace Define
         Press,
         PointerDown,
         PointerUp,
-        Click,
     }
 
     public enum TouchEvent
@@ -49,6 +48,22 @@ namespace Define
         End,
     }
 
+    public enum InputEvent
+    {
+        KeyEvent,
+        MouseEvent,
+        TouchEvent,
+        END,
+    }
+
+    public enum InputType
+    { 
+        Down,
+        Press,
+        Up,
+        Drag,
+        END,
+    }
 
     public enum CameraMode
     {
@@ -56,4 +71,6 @@ namespace Define
         TopView,
         Free,
     }
+
+ 
 }
