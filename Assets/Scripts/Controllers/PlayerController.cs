@@ -56,8 +56,10 @@ public class PlayerController : MonoBehaviour
         //  Todo : 추 후 조작관련 기능 추가
         //Managers.Input.MoveKeyAction -= OnMoveKey;
         //Managers.Input.MoveKeyAction += OnMoveKey;
-        Managers.Input.MouseAction -= OnMouseEvent;
-        Managers.Input.MouseAction += OnMouseEvent;
+        Managers.Input.MouseActions -= OnMouseEvent;
+        Managers.Input.MouseActions += OnMouseEvent;
+
+        Managers.Input.TouchActions[(int)Define.TouchEvent.Drag] += UpdateIdle;
     }
 
 

@@ -59,7 +59,7 @@ public class UIManager
         GameObject go = Managers.Resource.Instantiate($"UI/Popup/{name}");
         T popup = Util.GetOrAddComponent<T>(go);
         _popupStack.Push(popup);
-
+        
         go.transform.SetParent(Root.transform);
 
 		return popup;

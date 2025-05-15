@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Define
+namespace Define
 {
     public enum Layer
     {
@@ -40,6 +40,15 @@ public class Define
         PointerUp,
         Click,
     }
+
+    public enum TouchEvent
+    {
+        Begin,
+        Pressing,
+        Drag,
+        End,
+    }
+
 
     public enum CameraMode
     {

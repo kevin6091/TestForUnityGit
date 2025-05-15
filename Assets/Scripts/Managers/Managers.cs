@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -65,6 +66,7 @@ public class Managers : MonoBehaviour
         _sound.Init();
         _pool.Init();
         _data.Init();
+        _input.Init();
     }
 
     static public void Clear()
