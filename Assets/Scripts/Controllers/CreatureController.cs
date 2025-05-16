@@ -6,10 +6,10 @@ public abstract class CreatureController : MonoBehaviour
 {
 
     [SerializeField]
-    protected Vector3 _destPos = new Vector3();
+    public Vector3 TargetPos { get; set; } = new Vector3();
 
     [SerializeField]
-    protected GameObject _lockTarget = null;
+    public GameObject LockTarget { get; set; } = null;
 
     [SerializeField]
 
@@ -18,10 +18,7 @@ public abstract class CreatureController : MonoBehaviour
     public Define.State State
     {
         get { return _stateMachine.CurStateType(); }
-        set
-        {
-            _stateMachine.ChangeState(value);
-        }
+        set { _stateMachine.ChangeState(value); }
     }
 
     public StateMachine StateMachine { get { return _stateMachine; } }
@@ -31,29 +28,10 @@ public abstract class CreatureController : MonoBehaviour
         Init(); 
     }
 
-    public abstract void Init();
-
-    void Update()
+    private void Update()
     {
-        switch (State)
-        {
-            case Define.State.Die:
-                UpdateDie();
-                break;
-            case Define.State.Move:
-                UpdateMoving();
-                break;
-            case Define.State.Idle:
-                UpdateIdle();
-                break;
-            case Define.State.Skill:
-                UpdateSkill();
-                break;
-        }
+        _stateMachine.Execute();
     }
 
-    protected virtual void UpdateDie() { }
-    protected virtual void UpdateMoving() { }
-    protected virtual void UpdateIdle() { }
-    protected virtual void UpdateSkill() { }
+    public abstract void Init();
 }

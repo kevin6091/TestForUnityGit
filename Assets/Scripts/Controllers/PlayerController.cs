@@ -13,7 +13,10 @@ public class PlayerController : CreatureController
     IKController _IKController = null;
     Animator _anim = null;
     Stacker _stacker = null;
+
     bool _stopSkill = false;
+
+    public PlayerStat Stat { get { return _stat; } private set { _stat = value; } }
 
     public override void Init()
     {
@@ -40,57 +43,6 @@ public class PlayerController : CreatureController
                 _IKController.RightHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().RightHandSocket;
                 break;
             }
-        }
-    }
-
-    protected override void UpdateMoving()
-    {
-        Vector3 dir;
-        float dist;
-
-        if (_lockTarget != null)
-        {
-            _destPos = _lockTarget.transform.position;
-
-            dir = _destPos - transform.position;
-            dist = dir.magnitude;
-
-            if ((_destPos - transform.position).magnitude <= 1f)
-            {
-                State = Define.State.Skill;
-                return;
-            }
-        }
-        else
-        {
-            dir = _destPos - transform.position;
-            dist = dir.magnitude;
-        }
-
-
-        if (dist < /*0.0001f*/ 0.1f)
-            State = Define.State.Idle;
-
-        else
-        {
-            NavMeshAgent nma = gameObject.GetComponent<NavMeshAgent>();
-            //  nma.CalculatePath();
-
-            //  Move
-            float moveDist = Mathf.Clamp(_stat.MoveSpeed * Time.deltaTime, 0f, dist);
-
-            Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
-            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1f, LayerMask.GetMask("Block")))
-            {
-                if (Input.GetMouseButton(0) == false)
-                    State = Define.State.Idle;
-                return;
-            }
-
-            nma.Move(dir.normalized * moveDist);
-
-            //  Rotate
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
         }
     }
 
@@ -156,23 +108,23 @@ public class PlayerController : CreatureController
             case Define.MouseEvent.PointerDown:
                 if (isRaycastHit)
                 {
-                    _destPos = hit.point; State = Define.State.Move;
+                    TargetPos = hit.point; State = Define.State.Move;
                     _stopSkill = false;
 
                     if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
                     {
-                        _lockTarget = hit.collider.gameObject;
+                        LockTarget = hit.collider.gameObject;
                     }
                     else
                     {
-                        _lockTarget= null;
+                        LockTarget = null;
                     }
                 }
                 break;
             case Define.MouseEvent.Press:
-                if (_lockTarget == null && 
+                if (LockTarget == null && 
                     isRaycastHit)
-                    _destPos = hit.point;
+                    TargetPos = hit.point;
                 break;
             case Define.MouseEvent.PointerUp:
                 _stopSkill = true;
@@ -208,8 +160,8 @@ public class PlayerController : CreatureController
         _anim.CrossFade(name, time);
     }
 
-    public void LeanStacker(Quaternion targetRotation)
+    public void LeanStacker(Quaternion targetRotation, float time, float waitTime = 0f)
     {
-        StartCoroutine(_stacker.Co_Lean(targetRotation));
+        StartCoroutine(_stacker.Co_Lean(targetRotation, time, waitTime));
     }
 }

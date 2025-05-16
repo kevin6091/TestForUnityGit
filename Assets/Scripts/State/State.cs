@@ -18,7 +18,10 @@ public abstract class State
         
     }
 
-    public virtual void Execute() { }
+    public virtual void Execute() 
+    { 
+
+    }
 
     public virtual void Exit() 
     { 

@@ -62,7 +62,7 @@ public class Stacker : MonoBehaviour
         _offsetFromParent.y = 0.1f;
         _offsetFromObject = new Vector3(0f, 1f, 1f);
 
-        for(int i = 0; i < 10; ++i)
+        for(int i = 0; i < 30; ++i)
             _pizzas.Add(Managers.Resource.Instantiate("Foods/Pizza"));
     }
 
@@ -107,31 +107,52 @@ public class Stacker : MonoBehaviour
     }
 
 
-    public IEnumerator Co_Lean(Quaternion targetRotation)
+    public IEnumerator Co_Lean(Quaternion targetRotation, float time, float waitTime)
     {
-        Quaternion maxRotate = targetRotation;
+        if(waitTime > 0f)
+            yield return new WaitForSeconds(waitTime);
+
         Quaternion minRotate = Quaternion.Euler(new Vector3(0f, 0f, 0f));
-
         GameObject[] objects = _stack.ToArray();
-        for (int i = 0; i < objects.Length; ++i)
+        Quaternion[] startRotates = new Quaternion[objects.Length];
+        Quaternion[] targetRotates = new Quaternion[objects.Length];
+
+        for(int i = 0; i < objects.Length; ++i)
         {
+            startRotates[i] = objects[i].transform.localRotation;
             objects[i].transform.localRotation = Quaternion.identity;
+            targetRotates[i] = Quaternion.Slerp(minRotate, targetRotation, 10f / i);
+
         }
 
-        for (int i = 0; i < objects.Length; ++i)
+        float accTime = 0f;
+
+        while (true)
         {
-            objects[i].transform.localRotation = Quaternion.Slerp(minRotate, maxRotate, 10f / i);
-        }
+            accTime += Time.deltaTime;
+            float ratio = Mathf.Min(accTime / time, 1f);
 
-        yield break;
+
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                objects[i].transform.localRotation = Quaternion.Slerp(startRotates[i], targetRotates[i], ratio);
+            }
+
+            if (ratio >= 1f - Mathf.Epsilon)
+                yield break;
+
+            yield return null;
+        }
     }
 
     private IEnumerator Co_MoveToStackingPosition(GameObject gameObject)
     {
         float accTime = 0f;
         float maxTime = 1f;
+
         Vector3 startLocalPos = gameObject.transform.localPosition;
         Transform parentTransform = gameObject.transform.parent;
+
         while (true)
         {
             accTime += Time.deltaTime;
