@@ -2,8 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Define
+namespace Define
 {
+    public enum State
+    {
+        Die,
+        Move,
+        Idle,
+        Work,
+        Skill,
+        END,
+    }
+
     public enum Layer
     {
         Wall = 8,
@@ -16,7 +26,7 @@ public class Define
     {
         Unknown,    //  Default
         Login,      //  Main
-        Lobby,      
+        Lobby,
         Game,
     }
 
@@ -73,4 +83,9 @@ public class Define
     }
 
  
+}
+
+public interface IKeyHandler
+{
+    public void OnKeyboard();
 }

@@ -18,7 +18,7 @@ public class Managers : MonoBehaviour
     private TileManager _tile = new TileManager();
     private UIManager _ui = new UIManager();
 
-    public static Managers Instance { get { Init(); return s_instance; } }
+    private static Managers Instance { get { Init(); return s_instance; } }
     public static DataManager Data { get { return Instance._data; } }
     public static InputManager Input { get { return Instance._input; } }
     public static PathManager Path { get { return Instance._path; } }

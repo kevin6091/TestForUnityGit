@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -6,117 +7,44 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : CreatureController
 {
     PlayerStat _stat = null;
-    Vector3 _destPos = new Vector3();
+    IKController _IKController = null;
+    Animator _anim = null;
+    Stacker _stacker = null;
 
-    GameObject _lockTarget = null;
+    bool _stopSkill = false;
 
-    public enum PlayerState
-    {
-        Die,
-        Moving,
-        Idle,
-        Skill,
-    }
+    public PlayerStat Stat { get { return _stat; } private set { _stat = value; } }
 
-    [SerializeField]
-    PlayerState _state = PlayerState.Idle;
-
-    public PlayerState State
-    {
-        get { return _state; }
-        set
-        {
-            _state = value;
-
-            Animator anim = GetComponent<Animator>();
-            switch (_state)
-            {
-                case PlayerState.Die:
-                    break;
-                case PlayerState.Moving:
-                    anim.CrossFade("RUN", 0.25f);
-                    break;
-                case PlayerState.Idle:
-                    anim.CrossFade("WAIT", 0.25f);
-                    break;
-                case PlayerState.Skill:
-                    anim.CrossFade("ATTACK", 0.25f, -1, 0f);
-                    break;
-            }
-        }
-    }
-
-    void Start()
+    public override void Init()
     {
         _stat = GetComponent<PlayerStat>();
+        _IKController = GetComponent<IKController>();
+        _anim = GetComponent<Animator>();
+        _stacker = GetComponentInChildren<Stacker>();
+        _stateMachine = new StateMachine();
 
-        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] -= OnMouseEvent;
-        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] += OnMouseEvent;
-        //
-        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] -= UpdateIdle;
-        //Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Press)] += UpdateIdle;
+        StateMachine.RegisterState<StateIdlePlayer>(Define.State.Idle, this);
+        StateMachine.RegisterState<StateMovePlayer>(Define.State.Move, this);
+
+        State = Define.State.Idle;
+
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.MouseAction += OnMouseEvent;
 
         Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] -= JoyStickMove;
         Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] += JoyStickMove;
-    }
-
-
-    void UpdateDie()
-    {
-
-    }
-
-    void UpdateMoving()
-    {
-        Vector3 dir;
-        float dist;
-
-        if (_lockTarget != null)
+        //  Sync Hand Socket Stacker
+        for (int i = 0; i < transform.childCount; ++i)
         {
-            _destPos = _lockTarget.transform.position;
-
-            dir = _destPos - transform.position;
-            dist = dir.magnitude;
-
-            if ((_destPos - transform.position).magnitude <= 1f)
+            if (transform.GetChild(i).name == "Stacker")
             {
-                State = PlayerState.Skill;
-                return;
+                _IKController.LeftHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().LeftHandSocket;
+                _IKController.RightHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().RightHandSocket;
+                break;
             }
-        }
-        else
-        {
-            dir = _destPos - transform.position;
-            dist = dir.magnitude;
-        }
-
-
-        if (dist < /*0.0001f*/ 0.1f)
-            State = PlayerState.Idle;
-
-        else
-        {
-            NavMeshAgent nma = gameObject.GetComponent<NavMeshAgent>();
-            //  nma.CalculatePath();
-
-            //  Move
-            float moveDist = Mathf.Clamp(_stat.MoveSpeed * Time.deltaTime, 0f, dist);
-
-            Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
-            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1f, LayerMask.GetMask("Block")))
-            {
-                if (Input.GetMouseButton(0) == false)
-                    State = PlayerState.Idle;
-                return;
-            }
-
-            nma.Move(dir.normalized * moveDist);
-
-            //  Rotate
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
         }
     }
 
@@ -131,93 +59,19 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(dir);
     }
 
-    void UpdateIdle()
-    {
-    }
-
-    void UpdateSkill()
-    {
-        if(_lockTarget != null)
-        {
-            Vector3 dir = _lockTarget.transform.position - transform.position;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), _stat.RotateSpeed * Time.deltaTime);
-        }
-    }
-
-    void OnHitEvent()
-    {
-        if(_stopSkill)
-        {
-            State = PlayerState.Idle;
-        }
-        else
-        {
-            State = PlayerState.Skill;
-        }
-    }
-
-    void Update()
-    {
-        switch (State)
-        {
-            case PlayerState.Die:
-                UpdateDie();
-                break;
-            case PlayerState.Moving:
-                UpdateMoving();
-                break;
-            case PlayerState.Idle:
-                UpdateIdle();
-                break;
-            case PlayerState.Skill:
-                UpdateSkill();
-                break;
-        }
-    }
-
-    void OnMoveKey(bool w, bool a, bool s, bool d)
-    {
-        //  Todo : 추 후 실제 플레이어 컨트롤러 제작시 추가
-        return;
-
-        if (true == w)
-        {
-            transform.position += (Vector3.forward * Time.deltaTime * _stat.MoveSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), Time.deltaTime * _stat.RotateSpeed);
-        }
-        else if (true == s)
-        {
-            transform.position += (Vector3.back * Time.deltaTime * _stat.MoveSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), Time.deltaTime * _stat.RotateSpeed);
-        }
-
-        if (true == a)
-        {
-            transform.position += (Vector3.left * Time.deltaTime * _stat.MoveSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), Time.deltaTime * _stat.RotateSpeed);
-        }
-        else if (true == d)
-        {
-            transform.position += (Vector3.right * Time.deltaTime * _stat.MoveSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), Time.deltaTime * _stat.RotateSpeed);
-        }
-
-        State = PlayerState.Moving;
-    }
-
     void OnMouseEvent(Define.MouseEvent evt)
     {
         switch (State)
         {
-            case PlayerState.Die:
+            case Define.State.Die:
                 break;
-            case PlayerState.Moving:
+            case Define.State.Move:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Idle:
+            case Define.State.Idle:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Skill:
+            case Define.State.Skill:
                 OnMouseEvent_Skill(evt);
                 break;
         }
@@ -237,23 +91,23 @@ public class PlayerController : MonoBehaviour
             case Define.MouseEvent.PointerDown:
                 if (isRaycastHit)
                 {
-                    _destPos = hit.point; State = PlayerState.Moving;
+                    TargetPos = hit.point; State = Define.State.Move;
                     _stopSkill = false;
 
                     if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
                     {
-                        _lockTarget = hit.collider.gameObject;
+                        LockTarget = hit.collider.gameObject;
                     }
                     else
                     {
-                        _lockTarget= null;
+                        LockTarget = null;
                     }
                 }
                 break;
             case Define.MouseEvent.Press:
-                if (_lockTarget == null && 
+                if (LockTarget == null && 
                     isRaycastHit)
-                    _destPos = hit.point;
+                    TargetPos = hit.point;
                 break;
             case Define.MouseEvent.PointerUp:
                 _stopSkill = true;
@@ -261,12 +115,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    bool _stopSkill = false;
     void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
         if(evt == Define.MouseEvent.PointerUp)
         {
             _stopSkill = true;
         }
+    }
+
+    public void OnKeyboard()
+    {
+        State curState = StateMachine.CurState;
+        if (curState is IKeyHandler == true)
+        {
+            IKeyHandler keyHandler = (IKeyHandler)curState;
+            keyHandler.OnKeyboard();
+        }
+    }
+
+    public void PlayAnim(string name)
+    {
+        _anim.Play(name);
+    }
+
+    public void CrossfadeAnim(string name, float time)
+    {
+        _anim.CrossFade(name, time);
+    }
+
+    public void LeanStacker(Quaternion targetRotation, float time, float waitTime = 0f)
+    {
+        StartCoroutine(_stacker.Co_Lean(targetRotation, time, waitTime));
     }
 }
