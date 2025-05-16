@@ -1,38 +1,25 @@
-using DG.Tweening;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using TreeEditor;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
-public class PlayerController : CreatureController
+public class EmployeeController : CreatureController
 {
-    PlayerStat _stat = null;
+    Stat _stat = null;
     IKController _IKController = null;
     Stacker _stacker = null;
-
-    bool _stopSkill = false;
-
-    public PlayerStat Stat { get { return _stat; } private set { _stat = value; } }
 
     public override void Init()
     {
         base.Init(); 
 
-        _stat = gameObject.GetOrAddComponent<PlayerStat>();
+        _stat = gameObject.GetOrAddComponent<Stat>();
         _IKController = gameObject.GetOrAddComponent<IKController>();
         _stacker = GetComponentInChildren<Stacker>();
 
-        StateMachine.RegisterState<StateIdlePlayer>(Define.State.Idle, this);
-        StateMachine.RegisterState<StateMovePlayer>(Define.State.Move, this);
+        StateMachine.RegisterState<StateIdleEmployee>(Define.State.Idle, this);
+        StateMachine.RegisterState<StateMoveEmployee>(Define.State.Move, this);
 
         State = Define.State.Idle;
-
-        Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] -= JoyStickMove;
-        Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] += JoyStickMove;
 
         //  Sync Hand Socket Stacker
         for (int i = 0; i < transform.childCount; ++i)
@@ -43,27 +30,6 @@ public class PlayerController : CreatureController
                 _IKController.RightHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().RightHandSocket;
                 break;
             }
-        }
-    }
-
-    void JoyStickMove(object[] objects)
-    {
-        Vector3 dir = ((Vector3)objects[0]).normalized;
-
-        dir = new Vector3(dir.x, 0.0f, dir.y);
-
-        NavMeshAgent nma = GetComponent<NavMeshAgent>();
-        nma.Move(dir * Time.deltaTime * _stat.MoveSpeed);
-        transform.rotation = Quaternion.LookRotation(dir);
-    }
-
-    public void OnKeyboard()
-    {
-        State curState = StateMachine.CurState;
-        if (curState is IKeyHandler == true)
-        {
-            IKeyHandler keyHandler = (IKeyHandler)curState;
-            keyHandler.OnKeyboard();
         }
     }
 

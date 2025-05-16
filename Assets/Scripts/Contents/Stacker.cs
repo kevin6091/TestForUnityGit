@@ -40,6 +40,8 @@ public class Stacker : MonoBehaviour
         }
     }
 
+    public int Count { get { return _stack.Count; } }
+
     public enum StackerState
     {
         IDLE,
@@ -62,8 +64,11 @@ public class Stacker : MonoBehaviour
         _offsetFromParent.y = 0.1f;
         _offsetFromObject = new Vector3(0f, 1f, 1f);
 
-        for(int i = 0; i < 30; ++i)
-            _pizzas.Add(Managers.Resource.Instantiate("Foods/Pizza"));
+        if(tag != "Table")
+        {
+            for(int i = 0; i < 30; ++i)
+                _pizzas.Add(Managers.Resource.Instantiate("Foods/Pizza"));
+        }
     }
 
     float accTime = 0f;
@@ -148,7 +153,7 @@ public class Stacker : MonoBehaviour
     private IEnumerator Co_MoveToStackingPosition(GameObject gameObject)
     {
         float accTime = 0f;
-        float maxTime = 1f;
+        float maxTime = 0.1f;
 
         Vector3 startLocalPos = gameObject.transform.localPosition;
         Transform parentTransform = gameObject.transform.parent;
@@ -164,6 +169,18 @@ public class Stacker : MonoBehaviour
                 yield break;
 
             yield return null;
+        }
+    }
+
+    float lastPop = 0f;
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Table")
+        {
+            if (lastPop + 0.1f >= Time.time)
+                return;
+            other.gameObject.GetComponent<Stacker>().Push(Pop());
+            lastPop = Time.time;
         }
     }
 }

@@ -15,6 +15,9 @@ public abstract class CreatureController : MonoBehaviour
 
     protected StateMachine _stateMachine = null;
 
+    Animator _anim = null;
+    public Animator Anim { get { return _anim; } protected set { _anim = value; } }
+
     public Define.State State
     {
         get { return _stateMachine.CurStateType(); }
@@ -25,7 +28,7 @@ public abstract class CreatureController : MonoBehaviour
 
     private void Start()
     {
-        Init(); 
+        Init();
     }
 
     private void Update()
@@ -33,5 +36,20 @@ public abstract class CreatureController : MonoBehaviour
         _stateMachine.Execute();
     }
 
-    public abstract void Init();
+    public virtual void Init()
+    {
+        _stateMachine = new StateMachine();
+        Anim = GetComponent<Animator>();
+    }
+
+    public void PlayAnim(string name)
+    {
+        _anim.Play(name);
+    }
+
+    public void CrossfadeAnim(string name, float time)
+    {
+        _anim.CrossFade(name, time);
+    }
+
 }
