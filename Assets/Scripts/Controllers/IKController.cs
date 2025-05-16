@@ -9,7 +9,7 @@ public class IKController : MonoBehaviour
     public Transform LeftHandTarget { get; set; } = null;
     public Transform RightHandTarget { get; set; } = null;
 
-    public float IK_Weight { get; set; } = 0f;
+    public float Weight { get; set; } = 0f;
 
     private void Start()
     {
@@ -23,11 +23,11 @@ public class IKController : MonoBehaviour
         if (null == _animator)
             return;
 
-        _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+        _animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, Weight);
+        _animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, Weight);
 
-        _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+        _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, Weight);
+        _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, Weight);
 
         _animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandTarget.position);
         _animator.SetIKRotation(AvatarIKGoal.LeftHand, LeftHandTarget.rotation);

@@ -1577,8 +1577,6 @@ GameObject:
   - component: {fileID: 4991825125497252991}
   - component: {fileID: 3093341417098289329}
   - component: {fileID: 1474405092812885389}
-  - component: {fileID: 3223699889457008985}
-  - component: {fileID: 887933758}
   - component: {fileID: 447524340}
   m_Layer: 0
   m_Name: UnityChan
@@ -1681,39 +1679,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsUsing: 0
---- !u!114 &3223699889457008985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7070058521069663805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5afe777c728395c46b50fd08a5534088, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _level: 0
-  _hp: 0
-  _maxHp: 0
-  _attack: 0
-  _defense: 0
-  _moveSpeed: 0
-  _rotateSpeed: 0
-  _exp: 0
-  _gold: 0
---- !u!114 &887933758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7070058521069663805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a230b8c3c91f4644b2380ece2d40388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!195 &447524340
 NavMeshAgent:
   m_ObjectHideFlags: 0

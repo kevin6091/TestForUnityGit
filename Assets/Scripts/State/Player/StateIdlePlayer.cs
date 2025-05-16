@@ -5,9 +5,7 @@ using UnityEngine;
 public class StateIdlePlayer : StatePlayer, IKeyHandler
 {
     public StateIdlePlayer(StateMachine stateMachine, MonoBehaviour context) : base(stateMachine, context)
-    {
-
-    }
+    { }
 
     public override void Enter() 
     {
@@ -18,7 +16,9 @@ public class StateIdlePlayer : StatePlayer, IKeyHandler
 
     public override void Execute() 
     {
+        base.Execute();
 
+        Context.UpdateArm();
     }
 
     public override void Exit() 
