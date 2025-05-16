@@ -17,10 +17,6 @@ public class CameraController : MonoBehaviour
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] -= OnKeyboard;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] += OnKeyboard;
 
-        // Todo : InputManager Actinos컨테이너 완성 후 삭제
-        //Managers.Input.KeyAction -= OnKeyboard;
-        //Managers.Input.KeyAction += OnKeyboard;
-
         _camera = GetComponent<Camera>();
         if (null == _camera)
         {
@@ -57,7 +53,7 @@ public class CameraController : MonoBehaviour
 
     }
 
-    void OnKeyboard(object[] objects, uint count)
+    void OnKeyboard(object[] objects)
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {

@@ -31,11 +31,9 @@ public class PlayerController : CreatureController
 
         State = Define.State.Idle;
 
-        Managers.Input.MouseAction -= OnMouseEvent;
-        Managers.Input.MouseAction += OnMouseEvent;
-
         Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] -= JoyStickMove;
         Managers.Input.Actions[(Define.InputEvent.MouseEvent, Define.InputType.Drag)] += JoyStickMove;
+
         //  Sync Hand Socket Stacker
         for (int i = 0; i < transform.childCount; ++i)
         {
@@ -48,7 +46,7 @@ public class PlayerController : CreatureController
         }
     }
 
-    void JoyStickMove(object[] objects, uint count)
+    void JoyStickMove(object[] objects)
     {
         Vector3 dir = ((Vector3)objects[0]).normalized;
 
@@ -57,62 +55,6 @@ public class PlayerController : CreatureController
         NavMeshAgent nma = GetComponent<NavMeshAgent>();
         nma.Move(dir * Time.deltaTime * _stat.MoveSpeed);
         transform.rotation = Quaternion.LookRotation(dir);
-    }
-
-    void OnMouseEvent(Define.MouseEvent evt)
-    {
-        switch (State)
-        {
-            case Define.State.Die:
-                break;
-            case Define.State.Move:
-                OnMouseEvent_IdleRun(evt);
-                break;
-            case Define.State.Idle:
-                OnMouseEvent_IdleRun(evt);
-                break;
-            case Define.State.Skill:
-                OnMouseEvent_Skill(evt);
-                break;
-        }
-    }
-
-    void OnMouseEvent_IdleRun(Define.MouseEvent evt)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float dist = 100f;
-        RaycastHit hit;
-        int layerMask = (1 << (int)Define.Layer.Floor) | (1 << (int)Define.Layer.Monster);
-
-        bool isRaycastHit = Physics.Raycast(ray, out hit, dist, layerMask);
-
-        switch (evt)
-        {
-            case Define.MouseEvent.PointerDown:
-                if (isRaycastHit)
-                {
-                    TargetPos = hit.point; State = Define.State.Move;
-                    _stopSkill = false;
-
-                    if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
-                    {
-                        LockTarget = hit.collider.gameObject;
-                    }
-                    else
-                    {
-                        LockTarget = null;
-                    }
-                }
-                break;
-            case Define.MouseEvent.Press:
-                if (LockTarget == null && 
-                    isRaycastHit)
-                    TargetPos = hit.point;
-                break;
-            case Define.MouseEvent.PointerUp:
-                _stopSkill = true;
-                break;
-        }
     }
 
     void OnMouseEvent_Skill(Define.MouseEvent evt)
