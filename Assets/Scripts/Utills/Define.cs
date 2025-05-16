@@ -41,6 +41,8 @@ namespace Define
     {
         Click,
         Drag,
+        Down,
+        Up,
     }
 
     public enum MouseEvent

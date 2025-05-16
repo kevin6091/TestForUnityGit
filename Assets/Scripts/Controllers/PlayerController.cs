@@ -44,6 +44,8 @@ public class PlayerController : CreatureController
                 break;
             }
         }
+
+        Managers.UI.ShowSceneUI<UI_Joystick>("UI_Joystick");
     }
 
     void JoyStickMove(object[] objects)
