@@ -45,21 +45,6 @@ namespace Define
         Up,
     }
 
-    public enum MouseEvent
-    {
-        Press,
-        PointerDown,
-        PointerUp,
-    }
-
-    public enum TouchEvent
-    {
-        Begin,
-        Pressing,
-        Drag,
-        End,
-    }
-
     public enum InputEvent
     {
         KeyEvent,
@@ -84,7 +69,13 @@ namespace Define
         Free,
     }
 
- 
+    public enum WorkType
+    {
+        Buger,
+        BugerServing,
+        Trash,
+        Counter,
+    }
 }
 
 public interface IKeyHandler
