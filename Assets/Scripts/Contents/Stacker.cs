@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Stacker : MonoBehaviour
@@ -97,7 +98,8 @@ public class Stacker : MonoBehaviour
             parent = _stack.Peek().transform;
 
         gameObject.transform.parent = parent;
-        StartCoroutine("Co_MoveToStackingPosition", gameObject);
+        StartCoroutine(Co_MoveToStackingPosition(gameObject));
+        StartCoroutine(Co_Lean(Quaternion.identity, 0.1f, 0f));
 
         _stack.Push(gameObject);
     }
@@ -153,19 +155,20 @@ public class Stacker : MonoBehaviour
     private IEnumerator Co_MoveToStackingPosition(GameObject gameObject)
     {
         float accTime = 0f;
-        float maxTime = 0.1f;
+        float maxTime = 0.2f;
 
         Vector3 startLocalPos = gameObject.transform.localPosition;
-        Transform parentTransform = gameObject.transform.parent;
+        Vector3 additionalForce = new Vector3(0f, 2f, 0);
 
         while (true)
         {
             accTime += Time.deltaTime;
-            float ratio = accTime / maxTime;    
+            float ratio = Mathf.Min(accTime / maxTime, 1f);
 
-            gameObject.transform.localPosition = Vector3.Lerp(startLocalPos, _offsetFromParent, ratio);           
+            Vector3 curAdditonalForce = additionalForce * Mathf.Sin(ratio * Mathf.Deg2Rad * 180f);
+            gameObject.transform.localPosition = Vector3.Lerp(startLocalPos, _offsetFromParent, ratio) + curAdditonalForce;
 
-            if(ratio >= 1f - Mathf.Epsilon)
+            if (ratio >= 1f - Mathf.Epsilon)
                 yield break;
 
             yield return null;

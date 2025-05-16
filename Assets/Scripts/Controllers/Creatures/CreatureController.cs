@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//  3D 오브젝트
+//  리깅할 오브젝트 => 캐릭터
+
 public abstract class CreatureController : MonoBehaviour
 {
 
@@ -11,20 +14,17 @@ public abstract class CreatureController : MonoBehaviour
     [SerializeField]
     public GameObject LockTarget { get; set; } = null;
 
-    [SerializeField]
-
-    protected StateMachine _stateMachine = null;
-
     Animator _anim = null;
     public Animator Anim { get { return _anim; } protected set { _anim = value; } }
+    
+    protected StateMachine _stateMachine = null;
+    public StateMachine StateMachine { get { return _stateMachine; } private set { _stateMachine = value; } }
 
     public Define.State State
     {
         get { return _stateMachine.CurStateType(); }
         set { _stateMachine.ChangeState(value); }
     }
-
-    public StateMachine StateMachine { get { return _stateMachine; } }
 
     private void Start()
     {
@@ -33,12 +33,12 @@ public abstract class CreatureController : MonoBehaviour
 
     private void Update()
     {
-        _stateMachine.Execute();
+        StateMachine.Execute();
     }
 
     public virtual void Init()
     {
-        _stateMachine = new StateMachine();
+        StateMachine = new StateMachine();
         Anim = GetComponent<Animator>();
     }
 
@@ -51,5 +51,4 @@ public abstract class CreatureController : MonoBehaviour
     {
         _anim.CrossFade(name, time);
     }
-
 }

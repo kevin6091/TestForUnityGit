@@ -10,11 +10,11 @@ using UnityEngine.AI;
 
 public class PlayerController : CreatureController
 {
-    PlayerStat _stat = null;
-    IKController _IKController = null;
-    Stacker _stacker = null;
+    private PlayerStat _stat = null;
+    private IKController _IKController = null;
+    private Stacker _stacker = null;
 
-    bool _stopSkill = false;
+    private bool _stopSkill = false;
 
     public PlayerStat Stat { get { return _stat; } private set { _stat = value; } }
 
