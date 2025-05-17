@@ -27,6 +27,10 @@ public class WorkManager : MonoBehaviour
     
     public Work PeekToWorks { get { return ToWorks.Peek(); } }
 
+    public Work DeQueueToWorks { get { return ToWorks.Dequeue(); } }
+
+    
+
     public GameObject Root
     {
         get
