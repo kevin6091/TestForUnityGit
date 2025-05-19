@@ -17,6 +17,8 @@ public class StateMoveCustomer : StateCustomer
     public override void Execute()
     {
         base.Execute();
+
+        Context.MoveToTarget();
     }
 
     public override void Exit()

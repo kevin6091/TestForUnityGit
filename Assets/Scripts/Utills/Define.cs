@@ -14,6 +14,11 @@ namespace Define
         END,
     }
 
+    public enum Sequence
+    {
+        END,
+    }
+
     public enum Layer
     {
         Wall = 8,

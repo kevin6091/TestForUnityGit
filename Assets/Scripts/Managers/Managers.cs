@@ -13,6 +13,7 @@ public class Managers : MonoBehaviour
     private PathManager _path = new PathManager();
     private PoolManager _pool = new PoolManager();
     private ResourceManager _resource = new ResourceManager();
+    private SequenceManager _sequence = new SequenceManager();
     private SceneManagerEx _scene = new SceneManagerEx();
     private SoundManager _sound = new SoundManager();
     private TileManager _tile = new TileManager();
@@ -24,6 +25,7 @@ public class Managers : MonoBehaviour
     public static PathManager Path { get { return Instance._path; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
+    public static SequenceManager Sequence { get { return Instance._sequence; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } } 
     public static TileManager Tile { get { return Instance._tile; } }
@@ -67,11 +69,13 @@ public class Managers : MonoBehaviour
         _pool.Init();
         _data.Init();
         _input.Init();
+        _sequence.Init();
     }
 
     static public void Clear()
     {
         Sound.Clear();
+        Sequence.Clear();
         Input.Clear();
         Scene.Clear();
         UI.Clear();

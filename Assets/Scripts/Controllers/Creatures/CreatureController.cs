@@ -9,14 +9,13 @@ public abstract class CreatureController : MonoBehaviour
 {
 
     [SerializeField]
-    public Vector3 TargetPos { get; set; } = new Vector3();
-
-    [SerializeField]
     public GameObject LockTarget { get; set; } = null;
 
     Animator _anim = null;
     public Animator Anim { get { return _anim; } protected set { _anim = value; } }
-    
+    public TargetHolder Target { get; private set; }
+    public Stat Stat { get; protected set; }
+
     protected StateMachine _stateMachine = null;
     public StateMachine StateMachine { get { return _stateMachine; } private set { _stateMachine = value; } }
 
@@ -40,6 +39,8 @@ public abstract class CreatureController : MonoBehaviour
     {
         StateMachine = new StateMachine();
         Anim = GetComponent<Animator>();
+        Target = gameObject.GetOrAddComponent<TargetHolder>();
+        Stat = gameObject.GetOrAddComponent<Stat>();
     }
 
     public void PlayAnim(string name)
@@ -50,5 +51,13 @@ public abstract class CreatureController : MonoBehaviour
     public void CrossfadeAnim(string name, float time)
     {
         _anim.CrossFade(name, time);
+    }
+
+    public void MoveToTarget()
+    {
+        if (false == Target.Direction(out Vector3 dir))
+            return;
+
+        transform.position += dir.normalized * Stat.MoveSpeed;
     }
 }

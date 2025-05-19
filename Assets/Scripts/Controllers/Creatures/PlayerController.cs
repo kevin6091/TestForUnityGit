@@ -10,19 +10,13 @@ using UnityEngine.AI;
 
 public class PlayerController : CreatureController
 {
-    private PlayerStat _stat = null;
     private IKController _IKController = null;
     private Stacker _stacker = null;
-
-    private bool _stopSkill = false;
-
-    public PlayerStat Stat { get { return _stat; } private set { _stat = value; } }
 
     public override void Init()
     {
         base.Init(); 
 
-        _stat = gameObject.GetOrAddComponent<PlayerStat>();
         _IKController = gameObject.GetOrAddComponent<IKController>();
         _stacker = GetComponentInChildren<Stacker>();
 
@@ -55,7 +49,7 @@ public class PlayerController : CreatureController
         dir = new Vector3(dir.x, 0.0f, dir.y);
 
         NavMeshAgent nma = GetComponent<NavMeshAgent>();
-        nma.Move(dir * Time.deltaTime * _stat.MoveSpeed);
+        nma.Move(dir * Time.deltaTime * Stat.MoveSpeed);
         transform.rotation = Quaternion.LookRotation(dir);
     }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EmployeeController : CreatureController
 {
-    Stat _stat = null;
     IKController _IKController = null;
     Stacker _stacker = null;
 
@@ -12,7 +11,6 @@ public class EmployeeController : CreatureController
     {
         base.Init(); 
 
-        _stat = gameObject.GetOrAddComponent<Stat>();
         _IKController = gameObject.GetOrAddComponent<IKController>();
         _stacker = GetComponentInChildren<Stacker>();
 
