@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class PathManager
+public class PathManager : BaseManager
 {
     private readonly Queue<Action> _mainThreadQueue = new Queue<Action>();
 
-    public void OnUpdate()
+    public override void OnUpdate()
     {
         lock (_mainThreadQueue)
         {

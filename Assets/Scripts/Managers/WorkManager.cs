@@ -6,30 +6,15 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class WorkManager : MonoBehaviour
+public class WorkManager : BaseManager
 {
-    private static WorkManager _instance = null;
-
-    //public static WorkManager Instance 
-    //{
-    //    //get
-    //    //{
-    //    //    if(_instance == null)
-    //    //    {
-    //    //        _instance = ;
-    //    //    }
-    //    //}
-    //}
-
     Queue<Work> _toWorks = new Queue<Work>();
 
     private Queue<Work> ToWorks { get; }
     
-    public Work PeekToWorks { get { return ToWorks.Peek(); } }
+    public Work TryPeekToWorks { get { return ToWorks.Count() > 0 ? ToWorks.Peek() : null; } }
 
     public Work DeQueueToWorks { get { return ToWorks.Dequeue(); } }
-
-    
 
     public GameObject Root
     {
@@ -42,30 +27,31 @@ public class WorkManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-    }
-
-    public void AddWork(Define.WorkType workType)
+    public void GenerateWork(Define.WorkType workType)
     {
         switch(workType)
         {
             case Define.WorkType.Buger:
-                _toWorks.Enqueue(CreateObject<Buger>("Buger"));
+                AddWork(InstantiateWork<Buger>("Buger"));
                 break;
             case Define.WorkType.BugerServing:
-                _toWorks.Enqueue(CreateObject<BugerServing>("BugerServing"));
+                AddWork(InstantiateWork<BugerServing>("BugerServing"));
                 break;
             case Define.WorkType.Counter:
-                _toWorks.Enqueue(CreateObject<Counter>("Counter"));
+                AddWork(InstantiateWork<Counter>("Counter"));
                 break;
             case Define.WorkType.Trash:
-                _toWorks.Enqueue(CreateObject<Trash>("Trash"));
+                AddWork(InstantiateWork<Trash>("Trash"));
                 break;
         }
     }
 
-    private Work CreateObject<T>(string name) where T : Work
+    public void AddWork(Work work)
+    {
+        ToWorks.Enqueue(work);
+    }
+
+    private Work InstantiateWork<T>(string name) where T : Work
     {
         GameObject gameObject = Managers.Resource.Instantiate($"Works/{name}");
         gameObject.transform.SetParent(Root.transform);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,7 +18,10 @@ public class Managers : MonoBehaviour
     private SoundManager _sound = new SoundManager();
     private TileManager _tile = new TileManager();
     private UIManager _ui = new UIManager();
-
+    private EmployeeManager _employee = new EmployeeManager();
+    private WorkManager _work = new WorkManager();
+    private WorkMediator _workMediator = new WorkMediator();
+    
     private static Managers Instance { get { Init(); return s_instance; } }
     public static DataManager Data { get { return Instance._data; } }
     public static InputManager Input { get { return Instance._input; } }
@@ -28,6 +32,9 @@ public class Managers : MonoBehaviour
     public static SoundManager Sound { get { return Instance._sound; } } 
     public static TileManager Tile { get { return Instance._tile; } }
     public static UIManager UI { get { return Instance._ui; } }
+    public static EmployeeManager Employee { get { return Instance._employee; } }
+    public static WorkManager Work { get { return Instance._work; } }
+    private WorkMediator WorkMediator { get { return Instance._workMediator; } }
 
     void Start()
     {
@@ -36,8 +43,9 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-        _input.OnUpdate();
-        _path.OnUpdate();
+        Input.OnUpdate();
+        Path.OnUpdate();
+        WorkMediator.OnUpdate();
     }
 
     static void Init()
@@ -62,11 +70,12 @@ public class Managers : MonoBehaviour
 
     private void InitChilds()
     {
-        _tile.Init(new Vector2Int(100, 100));
-        _sound.Init();
-        _pool.Init();
-        _data.Init();
-        _input.Init();
+        Tile.Init(new Vector2Int(100, 100));
+        Sound.Init();
+        Pool.Init();
+        Data.Init();
+        Input.Init();
+        WorkMediator.Init();
     }
 
     static public void Clear()

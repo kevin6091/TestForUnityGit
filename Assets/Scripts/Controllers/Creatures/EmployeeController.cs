@@ -10,8 +10,8 @@ public class EmployeeController : CreatureController
 
     public override void Init()
     {
-        base.Init(); 
-
+        base.Init();
+        
         _stat = gameObject.GetOrAddComponent<Stat>();
         _IKController = gameObject.GetOrAddComponent<IKController>();
         _stacker = GetComponentInChildren<Stacker>();
@@ -52,5 +52,10 @@ public class EmployeeController : CreatureController
             curWeight = Mathf.Min(curWeight + Time.deltaTime * 5f, 1f);
             _IKController.Weight = curWeight;
         }
+    }
+
+    public IEnumerator MoveToWorkRoutine(Vector3 target)
+    {
+        yield return null;
     }
 }

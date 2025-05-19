@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneManagerEx
+public class SceneManagerEx : BaseManager
 {
     BaseScene _currentScene = null;
     public BaseScene CurrentScene
@@ -32,7 +32,7 @@ public class SceneManagerEx
         return name;
     }
 
-    public void Clear()
+    public override void Clear()
     {
         CurrentScene.Clear();
         CurrentScene = null;

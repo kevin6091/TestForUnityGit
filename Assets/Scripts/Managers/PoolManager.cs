@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class PoolManager
+public class PoolManager : BaseManager
 {
     #region Pool
     class Pool
@@ -72,7 +72,7 @@ public class PoolManager
     HashSet<string> _nonPoolableCache = new HashSet<string>();
     Transform _root;
 
-    public void Init()
+    public override void Init()
     {
         if(_root == null)
         {
@@ -137,7 +137,7 @@ public class PoolManager
         return _pool[name].Original;
     }
 
-    public void Clear()
+    public override void Clear()
     {
         foreach(Transform child in _root)
             GameObject.Destroy(child.gameObject);
