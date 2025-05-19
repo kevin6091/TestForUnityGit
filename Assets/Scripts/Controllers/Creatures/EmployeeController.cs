@@ -52,8 +52,10 @@ public class EmployeeController : CreatureController
         }
     }
 
-    public IEnumerator MoveToWorkRoutine(Vector3 target)
+    public IEnumerator WorkEscapeRoutine()
     {
-        yield return null;
+        // Todo :  알바가 현재 Work의 소유권을 뺏겼다.. (플레이어가 먼저 소유 등등)
+        // State를 잠자는걸로 바꾸는 등 탈출 구문을 추가해야함.
+        yield break;
     }
 }

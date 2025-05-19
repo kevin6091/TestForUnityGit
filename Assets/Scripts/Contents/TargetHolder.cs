@@ -8,6 +8,7 @@ public class TargetHolder : MonoBehaviour
 {
     public GameObject TargetObj { get; set; } = null;
     public Vector3 Offset { get; set; } = Vector3.zero;
+    public float Range { get; set; } = 0.0f;
 
     public bool Position(out Vector3 position)
     {
