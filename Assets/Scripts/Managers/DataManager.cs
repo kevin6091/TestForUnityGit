@@ -9,11 +9,11 @@ public interface ILoader<Key, Value>
     Dictionary<Key, Value> MakeDict();
 }
 
-public class DataManager
+public class DataManager : BaseManager
 {
     public Dictionary<int, Data.Stat> StatDict {  get; private set; } = new Dictionary<int, Data.Stat>();
 
-    public void Init()
+    public override void Init()
     {
         StatDict = LoadJson<Data.StatData, int, Data.Stat>("StatData").MakeDict();
     }

@@ -51,4 +51,9 @@ public class EmployeeController : CreatureController
             _IKController.Weight = curWeight;
         }
     }
+
+    public IEnumerator MoveToWorkRoutine(Vector3 target)
+    {
+        yield return null;
+    }
 }

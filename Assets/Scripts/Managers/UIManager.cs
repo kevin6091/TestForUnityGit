@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager
+public class UIManager : BaseManager
 {
     int _order = 10;
 
@@ -96,7 +96,7 @@ public class UIManager
             ClosePopupUI();
     }
 
-    public void Clear()
+    public override void Clear()
     {
         CloseAllPopupUI();
         _sceneUI = null;

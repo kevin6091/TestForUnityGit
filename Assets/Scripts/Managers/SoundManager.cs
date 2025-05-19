@@ -4,12 +4,12 @@ using System.ComponentModel.Design;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SoundManager
+public class SoundManager : BaseManager
 {
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
     Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
-    public void Init()
+    public override void Init()
     {
         GameObject root = GameObject.Find("@Sound");
         if (root == null)
@@ -29,7 +29,7 @@ public class SoundManager
         _audioSources[(int)Define.Sound.Bgm].loop = true;
     }
 
-    public void Clear()
+    public override void Clear()
     {
         foreach(AudioSource audioSource in _audioSources)
         {

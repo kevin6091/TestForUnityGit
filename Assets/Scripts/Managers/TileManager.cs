@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileManager
+public class TileManager : BaseManager
 {
     //  Contain
     private List<List<Tile>>        _tiles = new List<List<Tile>>();

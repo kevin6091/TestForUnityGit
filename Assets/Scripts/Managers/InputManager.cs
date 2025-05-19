@@ -6,7 +6,7 @@ using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InputManager
+public class InputManager : BaseManager
 {
     public Dictionary<(Define.InputEvent, Define.InputType), Action<object[]>> Actions { get; set; } = new Dictionary<(Define.InputEvent, Define.InputType), Action<object[]>>();
 
@@ -15,7 +15,7 @@ public class InputManager
 
     private Vector3 _dragStartPoint = Vector3.zero;
 
-    public void Init()
+    public override void Init()
     {
         for(int i = 0; i < (int)Define.InputEvent.END; i++)
         {
@@ -26,7 +26,7 @@ public class InputManager
         }
     }
 
-    public void OnUpdate()
+    public override void OnUpdate()
     {
         if (Input.anyKey && Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] != null)
             Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)].Invoke(null);
@@ -91,7 +91,7 @@ public class InputManager
         }
     }
 
-    public void Clear()
+    public override void Clear()
     {
         foreach (var key in Actions.Keys.ToList())
         {

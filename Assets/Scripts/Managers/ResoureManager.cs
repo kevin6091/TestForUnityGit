@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class ResourceManager
+public class ResourceManager : BaseManager
 {
     public T Load<T>(string path) where T : Object
     {
