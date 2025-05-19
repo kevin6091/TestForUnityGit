@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateIdleCustomer : StateEmployee
+public class StateIdleCustomer : StateCustomer
 {
     public StateIdleCustomer(StateMachine stateMachine, MonoBehaviour context) : base(stateMachine, context)
     { }

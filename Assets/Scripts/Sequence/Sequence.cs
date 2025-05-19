@@ -20,9 +20,16 @@ public class Sequence : MonoBehaviour
         _funcs.Clear();
     }
 
+    public void StartCoroutine()
+    {
+        StartCoroutine(Co_Initiate()); 
+    }
+
     public IEnumerator Co_Initiate()
     {
         float accTime = 0f;
+
+        Func<IEnumerator> func = this.Co_Initiate;
 
         _funcs.Sort((src, dst) => src.Key.CompareTo(dst.Key));
 

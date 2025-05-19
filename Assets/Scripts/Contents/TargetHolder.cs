@@ -25,7 +25,7 @@ public class TargetHolder : MonoBehaviour
         if (TargetObj == null)
             return false;
 
-        direction = (TargetObj.transform.position - Offset) - transform.position;
+        direction = (TargetObj.transform.position + Offset) - transform.position;
         return true;
     }
 }

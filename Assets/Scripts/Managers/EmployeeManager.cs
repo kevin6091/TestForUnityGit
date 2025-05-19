@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class EmployeeManager : BaseManager
 {
-    Queue<EmployeeController> _employees = new Queue<EmployeeController>();
-
-    private Queue<EmployeeController> Employees { get; }
+    private Queue<EmployeeController> Employees { get; } = new Queue<EmployeeController>();
 
     public EmployeeController TryPeekEmployees { get { return Employees.Count() > 0 ? Employees.Peek() : null; } }
 

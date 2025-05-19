@@ -25,22 +25,33 @@ public class StandController : ProbController
         _waitingLine.Offset = _waitingLine.transform.forward * -1f * 2f;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] -= OnKeyboard;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] += OnKeyboard;
+
+        List<GameObject> matchingObjects = new List<GameObject>();
+        GameObject[] allObjects = FindObjectsOfType<GameObject>(); // 씬 내 모든 활성 오브젝트 검색
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name == "Customer") // 이름 비교
+            {
+                customers.Add(obj.GetComponent<CustomerController>());
+            }
+        }
+
     }
 
     private void Update()
     {
     }
 
+    List<CustomerController> customers = new List<CustomerController>();
+    int index = 0;
     private void OnKeyboard(object[] objects)
     {
         if(Input.GetKeyDown(KeyCode.Alpha5))
         {
-            GameObject go = GameObject.Find("Customer");
-            if (go == null)
-                return;
-
-            CustomerController controller = go.GetComponent<CustomerController>();
-            _waitingLine.Enqueue(controller);
+            _waitingLine.Enqueue(customers[index++]);
+            while (index >= customers.Count)
+                --index;
         }
     }
 }

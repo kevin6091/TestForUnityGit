@@ -8,9 +8,8 @@ using UnityEngine;
 
 public class WorkManager : BaseManager
 {
-    Queue<Work> _toWorks = new Queue<Work>();
 
-    private Queue<Work> ToWorks { get; }
+    private Queue<Work> ToWorks { get; } = new Queue<Work>();
     
     public Work TryPeekToWorks { get { return ToWorks.Count() > 0 ? ToWorks.Peek() : null; } }
 

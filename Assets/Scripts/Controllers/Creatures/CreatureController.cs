@@ -58,6 +58,49 @@ public abstract class CreatureController : MonoBehaviour
         if (false == Target.Direction(out Vector3 dir))
             return;
 
-        transform.position += dir.normalized * Stat.MoveSpeed;
+        float dist = Mathf.Min(Stat.MoveSpeed * Time.deltaTime, dir.magnitude);
+        dir = dir.normalized;
+        transform.position += dir * dist;
+    }
+
+    public IEnumerator Co_MoveToTarget()
+    {
+        float dist = Mathf.Infinity;
+
+        while (dist > Mathf.Epsilon)
+        {
+            if(Target.Direction(out Vector3 newDir))
+                yield break;
+
+            dist = Mathf.Min(Stat.MoveSpeed * Time.deltaTime, newDir.magnitude);
+            newDir = newDir.normalized;
+
+            transform.position += newDir * dist;
+
+            yield return null;
+        }
+    }
+
+    public void RotateToTarget()
+    {
+        if (false == Target.Direction(out Vector3 dir) ||
+            dir.magnitude <= /*Mathf.Epsilon */0.0001f)
+            return;
+
+        Quaternion rotateSrc = transform.rotation;
+        Quaternion rotateDst = Quaternion.LookRotation(dir);
+        float rotateAngle = Mathf.Min(Stat.RotateSpeed * Time.deltaTime, Quaternion.Angle(rotateSrc, rotateDst));
+
+        Quaternion rotation = Quaternion.RotateTowards(rotateSrc, rotateDst, rotateAngle);
+
+        transform.rotation = rotation;
+    }
+
+    public bool IsReachedTarget()
+    {
+        if(Target.Position(out Vector3 targetPos))
+            return (targetPos - transform.position).magnitude < Mathf.Epsilon;
+
+        return true;
     }
 }

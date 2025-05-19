@@ -14,8 +14,8 @@ public class CustomerController : CreatureController
         _IKController = gameObject.GetOrAddComponent<IKController>();
         _stacker = GetComponentInChildren<Stacker>();
 
-        StateMachine.RegisterState<StateIdleEmployee>(Define.State.Idle, this);
-        StateMachine.RegisterState<StateMoveEmployee>(Define.State.Move, this);
+        StateMachine.RegisterState<StateIdleCustomer>(Define.State.Idle, this);
+        StateMachine.RegisterState<StateMoveCustomer>(Define.State.Move, this);
 
         State = Define.State.Idle;
 
