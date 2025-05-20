@@ -5,11 +5,15 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Work : MonoBehaviour
 {
-    protected bool _isWorking;
     public bool IsWorking { get; protected set; }
-
-    protected float _workRange;
     public float WorkRange { get; protected set; }
+    public Define.Worker Worker { get; protected set; }
+
+    public void AarrivedWork(Define.Worker worker)
+    {
+        Worker = worker;
+        IsWorking = true;
+    }
 
     public virtual IEnumerator Co_WorkRoutine()
     {
@@ -17,14 +21,18 @@ public class Work : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator Co_CheckIsWork(IEnumerator employeeEscapeRoutine)
+    public IEnumerator Co_CheckIsWorking(IEnumerator employeeEscapeRoutine, IEnumerator moveToWorkRoutine)
     {
         while (true)
         {
             if (IsWorking == true)
             {
-                StopAllCoroutines();
-                StartCoroutine(employeeEscapeRoutine);
+                CoroutineHelper.MyStopCoroutine(this, moveToWorkRoutine);
+
+                if(Worker == Define.Worker.Player)
+                {
+                    StartCoroutine(employeeEscapeRoutine);
+                }
 
                 yield break;
             }
@@ -40,10 +48,10 @@ public class Work : MonoBehaviour
         while (true)
         {
             employeeTransform.position += targetDir * moveSpeed * Time.deltaTime;
-
+            // Todo : 알바들 회전 넣어야함
             if ((transform.position - employeeTransform.position).magnitude <= WorkRange)
             {
-                IsWorking = true;
+                AarrivedWork(Define.Worker.Employee);
                 StartCoroutine(this.Co_WorkRoutine());
                 yield break;
             }
