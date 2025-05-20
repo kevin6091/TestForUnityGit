@@ -81,6 +81,12 @@ namespace Define
         Trash,
         Counter,
     }
+
+    public enum Worker
+    {
+        Player,
+        Employee,
+    }
 }
 
 public interface IKeyHandler
