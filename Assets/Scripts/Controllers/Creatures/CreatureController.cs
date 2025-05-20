@@ -69,8 +69,12 @@ public abstract class CreatureController : MonoBehaviour
 
         while (dist > Mathf.Epsilon)
         {
-            if(Target.Direction(out Vector3 newDir))
+            if (Target.Direction(out Vector3 newDir) == false ||
+                newDir.magnitude < 0.01f)
+            {
+                CoroutineHelper.RemoveCoroutineDict(this, Co_MoveToTarget());
                 yield break;
+            }
 
             dist = Mathf.Min(Stat.MoveSpeed * Time.deltaTime, newDir.magnitude);
             newDir = newDir.normalized;
