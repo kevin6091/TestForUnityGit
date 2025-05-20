@@ -21,7 +21,8 @@ public class StandController : ProbController
 
         State = Define.State.Idle;
 
-        //TEST Zone
+        //  Todo : Refactoring
+        //  TEST Zone
         _waitingLine.Offset = _waitingLine.transform.forward * -1f * 2f;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] -= OnKeyboard;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] += OnKeyboard;
@@ -37,10 +38,6 @@ public class StandController : ProbController
             }
         }
 
-    }
-
-    private void Update()
-    {
     }
 
     List<CustomerController> customers = new List<CustomerController>();

@@ -14,7 +14,6 @@ public abstract class ProbController : MonoBehaviour
         set { _stateMachine.ChangeState(value); }
     }
 
-
     private void Start()
     {
         Init();
