@@ -6,7 +6,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Define.CameraMode _mode = Define.CameraMode.QuarterView;
-    [SerializeField] Vector3 _delta = new Vector3();
+    [SerializeField] Vector3 _delta = new Vector3(100f, 100f, 100f);
     [SerializeField] GameObject _player = null;
 
     Camera _camera;
@@ -31,21 +31,27 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if(_mode == Define.CameraMode.QuarterView)
+        //  카메라 충돌 비활성화 아이소메트릭환경에서 필요하지않음
+        //if (_mode == Define.CameraMode.QuarterView)
+        //{
+        //    RaycastHit hit;
+        //    if (Physics.Raycast(_player.transform.position, _delta, out hit, _delta.magnitude, LayerMask.GetMask("Block")))
+        //    {
+        //        float dist = (hit.point - _player.transform.position).magnitude * 0.8f;
+        //        transform.position = _player.transform.position + _delta.normalized * dist;
+        //        transform.LookAt(_player.transform);
+        //    }
+        //    else
+        //    {
+        //        transform.position = _player.transform.position + _delta;
+        //        transform.LookAt(_player.transform);
+        //    }
+        //}
+        if (_mode == Define.CameraMode.QuarterView)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(_player.transform.position, _delta, out hit, _delta.magnitude, LayerMask.GetMask("Block")))
-            {
-                float dist = (hit.point - _player.transform.position).magnitude * 0.8f;
-                transform.position = _player.transform.position + _delta.normalized * dist;
-                transform.LookAt(_player.transform);
-            }
-            else
-            {
-                transform.position = _player.transform.position + _delta;
-                transform.LookAt(_player.transform);
-            }
-        }        
+            transform.position = _player.transform.position + _delta;
+            transform.LookAt(_player.transform);
+        }
     }
 
     public void SetQuaterView(Vector3 delta)
