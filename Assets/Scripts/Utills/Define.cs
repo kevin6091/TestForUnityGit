@@ -13,7 +13,6 @@ namespace Define
         Wait,
         Corrupt,
         Eat,
-        Wait,
         END,
     }
 

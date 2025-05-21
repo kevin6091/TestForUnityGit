@@ -95,7 +95,6 @@ public abstract class CreatureController : MonoBehaviour
         }
     }
 
-
     //  TODO: UnreadyMthod Make it ( IEnumerator Co_MovePath(NavMeshPath path) )
     //public IEnumerator Co_MovePath(NavMeshPath path)
     //{

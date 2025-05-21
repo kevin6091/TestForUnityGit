@@ -40,11 +40,11 @@ public class TargetHolder : MonoBehaviour
         return true;
     }
 
-    public bool IsReached
-    {
-        get
-        {
+    //public bool IsReached
+    //{
+    //    get
+    //    {
             
-        }
-    }
+    //    }
+    //}
 }
