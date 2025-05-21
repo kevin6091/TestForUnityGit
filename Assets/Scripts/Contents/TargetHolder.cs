@@ -29,4 +29,13 @@ public class TargetHolder : MonoBehaviour
         direction = (TargetObj.transform.position + Offset) - transform.position;
         return true;
     }
+
+    public bool DirectionXZ(out Vector3 direction)
+    {
+        if (Direction(out direction) == false)
+            return false;
+
+        direction.y = 0f;
+        return true;
+    }
 }

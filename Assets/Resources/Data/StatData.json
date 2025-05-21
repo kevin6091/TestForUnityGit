@@ -2,18 +2,21 @@
   "stats": [
     {
       "level": "1",
-      "hp": "100",
-      "attack": "10"
+      "maxStackSize": "3",
+      "moveSpeed": "3f",
+      "rotateSpeed": "500f"
     },
     {
       "level": "2",
-      "hp": "150",
-      "attack": "15"
+      "maxStackSize": "4",
+      "moveSpeed": "4f",
+      "rotateSpeed": "500f"
     },
     {
       "level": "3",
-      "hp": "200",
-      "attack": "20"
+      "maxStackSize": "5",
+      "moveSpeed": "5f",
+      "rotateSpeed": "500f"
     }
   ]
 }

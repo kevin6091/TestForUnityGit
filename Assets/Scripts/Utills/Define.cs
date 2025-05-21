@@ -10,7 +10,15 @@ namespace Define
         Move,
         Idle,
         Work,
-        Skill,
+        Corrupt,
+        END,
+    }
+
+    public enum CreatureType
+    {
+        Employee,
+        Player,
+        Customer,
         END,
     }
 

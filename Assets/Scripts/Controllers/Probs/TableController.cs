@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class TableController : ProbController
 {
-    private Stacker _stacker = null;
-    private List<ObjectHolder> _holders = new List<ObjectHolder>();
+    public Stacker Stacker { get; private set; } = null;
+    public List<ObjectHolder> _holders = new List<ObjectHolder>();
 
     public override void Init()
     {
@@ -16,16 +16,10 @@ public class TableController : ProbController
         foreach(ObjectHolder holder in holders) 
             _holders.Add(holder);
 
-        _stacker = GetComponentInChildren<Stacker>();
+        Stacker = GetComponentInChildren<Stacker>();
+        StateMachine.RegisterState<StateIdleTable>(Define.State.Idle, this);
+        StateMachine.RegisterState<StateCorruptTable>(Define.State.Corrupt, this);
 
-        StateMachine.RegisterState<StateIdleStand>(Define.State.Idle, this);
-
-        State = Define.State.Idle;
-
-       
-    }
-
-    private void Update()
-    {
+        State = Define.State.Idle;       
     }
 }

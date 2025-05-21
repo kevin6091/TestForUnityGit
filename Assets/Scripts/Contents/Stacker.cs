@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Stacker : MonoBehaviour
 {
-    Stack<GameObject> _stack = new Stack<GameObject>();
+    private Stack<GameObject> _stack = new Stack<GameObject>();
 
     [SerializeField]
     private float Speed { get; set; } = 10f;
@@ -97,7 +97,9 @@ public class Stacker : MonoBehaviour
         if (_stack.Count > 0)
             parent = _stack.Peek().transform;
 
-        gameObject.transform.parent = parent;
+        gameObject.transform.SetParent(parent, true);
+        //  TODO: Scale 깨지는 버그있음 이유 모름 스케일따로 안건드는데
+        gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
         StartCoroutine(Co_MoveToStackingPosition(gameObject));
         StartCoroutine(Co_Lean(Quaternion.identity, 0.1f, 0f));
 
@@ -175,15 +177,16 @@ public class Stacker : MonoBehaviour
         }
     }
 
-    float lastPop = 0f;
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Table")
-        {
-            if (lastPop + 0.1f >= Time.time)
-                return;
-            other.gameObject.GetComponent<Stacker>().Push(Pop());
-            lastPop = Time.time;
-        }
-    }
+    //  Todo : Player의 경우에만 충돌로인한 오브젝트와의 협업이 이루어져야함
+    //float lastPop = 0f;
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.tag == "Table")
+    //    {
+    //        if (lastPop + 0.1f >= Time.time)
+    //            return;
+    //        other.gameObject.GetComponent<Stacker>().Push(Pop());
+    //        lastPop = Time.time;
+    //    }
+    //}
 }

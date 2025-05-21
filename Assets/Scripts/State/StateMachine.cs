@@ -61,22 +61,35 @@ public class StateMachine
 
     public void ChangeState(Define.State stateType)
     {
-        if (_curState == _states[stateType])
+        if (_states.ContainsKey(stateType) == false)
+        {
+            Debug.Log($"Change Undefined State {stateType.ToString()}");
             return;
+        }
+
+        if (_curState == _states[stateType])
+        {
+            return;
+        }
+
 
         if (_curState != null)
+        {
             _curState.Exit();
+        }
 
         _curState = _states[stateType];
         _curStateType = stateType;
 
-        if(_curState != null)
+        if (_curState != null)
+        {
             _curState.Enter();
+        }
     }
 
     public void Execute()
     {
-        if(_curState != null)
+        if (_curState != null)
             _curState.Execute();
     }
 

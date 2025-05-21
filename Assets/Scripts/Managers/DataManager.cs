@@ -1,3 +1,4 @@
+using Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ public class DataManager : BaseManager
 
     public override void Init()
     {
-        StatDict = LoadJson<Data.StatData, int, Data.Stat>("StatData").MakeDict();
+        StatData statData = LoadJson<Data.StatData, int, Data.Stat>("StatData");
+        StatDict = statData.MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
