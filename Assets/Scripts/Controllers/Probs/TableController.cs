@@ -20,6 +20,7 @@ public class TableController : ProbController
         StateMachine.RegisterState<StateIdleTable>(Define.State.Idle, this);
         StateMachine.RegisterState<StateCorruptTable>(Define.State.Corrupt, this);
 
+        ProbType = Define.ProbType.Table;
         State = Define.State.Idle;       
     }
 }

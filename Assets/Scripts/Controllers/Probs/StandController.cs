@@ -19,10 +19,10 @@ public class StandController : ProbController
 
         StateMachine.RegisterState<StateIdleStand>(Define.State.Idle, this);
 
+        ProbType = Define.ProbType.Stand;
         State = Define.State.Idle;
 
         //  Todo : Refactoring
-        //  TEST Zone
         WaitingLine.Offset = WaitingLine.transform.forward * -1f * 2f;
     }
 }

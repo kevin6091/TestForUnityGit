@@ -13,6 +13,7 @@ public class Managers : MonoBehaviour
     private InputManager _input = new InputManager();
     private PathManager _path = new PathManager();
     private PoolManager _pool = new PoolManager();
+    private ProbManager _prob = new ProbManager();
     private ResourceManager _resource = new ResourceManager();
     private SequenceManager _sequence = new SequenceManager();
     private SceneManagerEx _scene = new SceneManagerEx();
@@ -28,6 +29,7 @@ public class Managers : MonoBehaviour
     public static InputManager Input { get { return Instance._input; } }
     public static PathManager Path { get { return Instance._path; } }
     public static PoolManager Pool { get { return Instance._pool; } }
+    public static ProbManager Prob { get { return Instance._prob; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SequenceManager Sequence { get { return Instance._sequence; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
@@ -79,6 +81,7 @@ public class Managers : MonoBehaviour
         Input.Init();
         WorkMediator.Init();
         Sequence.Init();
+        Prob.Init();
     }
 
     static public void Clear()
@@ -89,5 +92,6 @@ public class Managers : MonoBehaviour
         Scene.Clear();
         UI.Clear();
         Pool.Clear();
+        Prob.Clear();
     }
 }

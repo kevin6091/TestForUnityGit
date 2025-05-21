@@ -32,6 +32,9 @@ public class GameScene : BaseScene
         }
         
         _stand = Component.FindAnyObjectByType<StandController>();
+
+        GameObject go = Managers.Prob.CreateProb(Define.ProbType.Table);
+        go.transform.position = Vector3.zero;
     }
 
     public override void Clear()

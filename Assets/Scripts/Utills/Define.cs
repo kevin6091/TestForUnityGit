@@ -14,6 +14,13 @@ namespace Define
         END,
     }
 
+    public enum ProbType
+    {
+        Stand,
+        Table,
+        END,
+    }
+
     public enum CreatureType
     {
         Employee,

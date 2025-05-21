@@ -4,13 +4,5 @@ using UnityEngine;
 
 public class ObjectHolder : MonoBehaviour
 {
-	void Start()
-    {
-        
-    }
-
-	void Update()
-    {
-        
-    }
+    public GameObject HoldObject { get; set; } = null;
 }

@@ -8,8 +8,9 @@ public abstract class ProbController : MonoBehaviour
 {
     protected StateMachine _stateMachine = null;
     public StateMachine StateMachine { get { return _stateMachine; } private set { _stateMachine = value; } }
-
     public NavMeshObstacle Obstacle { get; private set; } = null;
+
+    public Define.ProbType ProbType { get; protected set; } = Define.ProbType.END;
 
     public Define.State State
     {
@@ -31,5 +32,7 @@ public abstract class ProbController : MonoBehaviour
     {
         StateMachine = new StateMachine();
         Obstacle = gameObject.GetOrAddComponent<NavMeshObstacle>();
+
+        Obstacle.carving = true;
     }
 }
