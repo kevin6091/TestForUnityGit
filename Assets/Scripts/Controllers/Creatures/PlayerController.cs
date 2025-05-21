@@ -53,6 +53,17 @@ public class PlayerController : CreatureController
         transform.rotation = Quaternion.LookRotation(dir);
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+
+            Debug.Log("StartCoroutine2");
+            StartCoroutine("Co_Test"); 
+            Debug.Log("StartCoroutine After");
+        }
+    }
+
     public void OnKeyboard()
     {
         State curState = StateMachine.CurState;
@@ -82,5 +93,12 @@ public class PlayerController : CreatureController
             curWeight = Mathf.Min(curWeight + Time.deltaTime * 5f, 1f);
             _IKController.Weight = curWeight;
         }
+    }
+
+    public IEnumerator Co_Test()
+    {
+        Debug.Log("Execute Coroutine");
+        yield return new WaitForSeconds(3f);
+        yield break;
     }
 }

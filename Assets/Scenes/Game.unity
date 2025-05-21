@@ -12980,6 +12980,18 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 887933743}
+    - target: {fileID: 844915846039910660, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
+      propertyPath: _delta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 844915846039910660, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
+      propertyPath: _delta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 844915846039910660, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
+      propertyPath: _delta.z
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 844915846039910661, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -13031,6 +13043,10 @@ PrefabInstance:
     - target: {fileID: 844915846039910666, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
       propertyPath: orthographic
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 844915846039910666, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
+      propertyPath: orthographic size
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e12222aac5687f54d97f6bf2e81372c4, type: 3}
