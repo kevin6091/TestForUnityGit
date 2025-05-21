@@ -10,6 +10,7 @@ namespace Define
         Move,
         Idle,
         Work,
+        Wait,
         Corrupt,
         END,
     }
