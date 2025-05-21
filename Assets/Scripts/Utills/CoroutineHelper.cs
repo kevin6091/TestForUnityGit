@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Bindings;
+using UnityEngine.UI;
 
 public class CoroutineHelper : MonoBehaviour
 {
-    public static Dictionary<object, Dictionary<string, Coroutine>> CoroutineDict { get; } = new Dictionary<object, Dictionary<string, Coroutine>>();
+    public static Dictionary<object, Dictionary<string, CoOutInfo>> CoroutineDict { get; } = new Dictionary<object, Dictionary<string, CoOutInfo>>();
 
     private static CoroutineHelper _instance;
 
@@ -39,13 +42,44 @@ public class CoroutineHelper : MonoBehaviour
         }
     }
 
-    public static CoOutInfo MyStartCoroutine(object obj, IEnumerator routine)
+    public static CoOutInfo GetCoInfo(object obj, IEnumerator routine)
     {
+        if (obj == null || routine == null)
+        {
+            Debug.LogError("CoroutineHelper : null obj, routine");
+            return new CoOutInfo();
+        }
+
         string routineName = routine.GetType().Name;
 
         if (CoroutineDict.ContainsKey(obj) == false)
         {
-            CoroutineDict.Add(obj, new Dictionary<string, Coroutine>());
+            Debug.LogError("CoroutineHelper : Not contains key obj");
+            return new CoOutInfo();
+        }
+
+        if (CoroutineDict[obj].ContainsKey(routineName) == false)
+        {
+            Debug.LogError("CoroutineHelper : Not contains key routine");
+            return new CoOutInfo();
+        }
+
+        return CoroutineDict[obj][routineName];
+    }
+
+    public static CoOutInfo MyStartCoroutine(object obj, IEnumerator routine)
+    {
+        if (obj == null || routine == null)
+        {
+            Debug.LogError("CoroutineHelper : null obj, routine");
+            return new CoOutInfo();
+        }
+
+        string routineName = routine.GetType().Name;
+
+        if (CoroutineDict.ContainsKey(obj) == false)
+        {
+            CoroutineDict.Add(obj, new Dictionary<string, CoOutInfo>());
         }
 
         // 이미 있던 루틴이었다면 어떻게 할지.. -> 중복 실행을 허용한다. 키를 새로 만들어준다.
@@ -57,11 +91,14 @@ public class CoroutineHelper : MonoBehaviour
         }
 
         Coroutine coroutine = Instance.StartCoroutine(routine);
-        
+
+        //Debug.Log(coroutine + $"{Time.time}");
+
         if(coroutine != null)
         {
-            CoroutineDict[obj].Add(routineName, coroutine);
-            return new CoOutInfo(routineName, routine, coroutine);
+            CoOutInfo info = new CoOutInfo(routineName, routine, coroutine);
+            CoroutineDict[obj].Add(routineName, info);
+            return info;
         }
 
         Debug.LogError("CoroutineHelper : Failed StartCoroutine");
@@ -70,6 +107,12 @@ public class CoroutineHelper : MonoBehaviour
 
     public static bool MyStopCoroutine(object obj, IEnumerator routine)
     {
+        if (obj == null || routine == null)
+        {
+            Debug.LogError("CoroutineHelper : null obj, routine");
+            return false;
+        }
+
         string routineName = routine.GetType().Name;
 
         if (CoroutineDict.ContainsKey(obj) == false)
@@ -84,32 +127,19 @@ public class CoroutineHelper : MonoBehaviour
             return false;
         }
 
+        Instance.StopCoroutine(CoroutineDict[obj][routineName].OutCoroutine);
         CoroutineDict[obj].Remove(routineName);
-        Instance.StopCoroutine(routine);
-        return true;
-    }
-
-    public static bool MyStopCoroutine(object obj, string routineName)
-    {
-        if (CoroutineDict.ContainsKey(obj) == false)
-        {
-            Debug.LogError("CoroutineHelper : Not contains key obj");
-            return false;
-        }
-
-        if (CoroutineDict[obj].ContainsKey(routineName) == false)
-        {
-            Debug.LogError("CoroutineHelper : Not contains key routine");
-            return false;
-        }
-
-        CoroutineDict[obj].Remove(routineName);
-        Instance.StopCoroutine(routineName);
         return true;
     }
 
     public static bool MyStopAllCoroutines(object obj)
     {
+        if (obj == null)
+        {
+            Debug.LogError("CoroutineHelper : null obj, routine");
+            return false;
+        }
+
         if (CoroutineDict.ContainsKey(obj) == false)
         {
             Debug.LogError("CoroutineHelper : Not contains key obj");
@@ -118,7 +148,7 @@ public class CoroutineHelper : MonoBehaviour
 
         foreach(var pair in CoroutineDict[obj])
         {
-            Instance.StopCoroutine(pair.Value);
+            Instance.StopCoroutine(pair.Value.OutCoroutine);
         }
         CoroutineDict[obj].Clear();
         
@@ -127,27 +157,15 @@ public class CoroutineHelper : MonoBehaviour
 
     public static bool RemoveCoroutineDict(object obj, IEnumerator routine) 
     {
+        if (obj == null || routine == null)
+        {
+            Debug.LogError("CoroutineHelper : null obj, routine");
+            return false;
+        }
+
         string routineName = routine.GetType().Name;
 
         if(CoroutineDict.ContainsKey(obj) == false)
-        {
-            Debug.LogError("CoroutineHelper : Not contains key obj");
-            return false;
-        }
-
-        if (CoroutineDict[obj].ContainsKey(routineName) == false)
-        {
-            Debug.LogError("CoroutineHelper : Not contains key routine");
-            return false;
-        }
-
-        CoroutineDict[obj].Remove(routineName);
-        return true;
-    }
-
-    public static bool RemoveCoroutineDict(object obj, string routineName)
-    {
-        if (CoroutineDict.ContainsKey(obj) == false)
         {
             Debug.LogError("CoroutineHelper : Not contains key obj");
             return false;
