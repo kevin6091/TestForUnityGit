@@ -10,13 +10,24 @@ public class GameScene : BaseScene
         base.Init();
 
         SceneType = Define.Scene.Game;
-        //  Managers.UI.ShowSceneUI<UI_Inven>();
-        //  Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
+        Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
 
         gameObject.GetOrAddComponent<CursorController>();
 
-        //  Todo : Refactoring
-        //  TEST Zone
+
+        //  Todo:Test
+        TestInit();        
+    }
+
+    public override void Clear()
+    {
+
+    }
+
+    //  Todo : Refactoring
+    //  TEST Zone
+    public void TestInit()
+    {
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] -= OnKeyboard;
         Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] += OnKeyboard;
 
@@ -30,17 +41,11 @@ public class GameScene : BaseScene
                 customers.Add(obj.GetComponent<CustomerController>());
             }
         }
-        
-        _stand = Component.FindAnyObjectByType<StandController>();
 
-        GameObject go = Managers.Prob.CreateProb(Define.ProbType.Table);
-        go.transform.position = Vector3.zero;
+        Managers.Prob.CreateProb(Define.ProbType.Table);
+        _stand = GameObject.Find("Stand").GetComponent<StandController>();
     }
 
-    public override void Clear()
-    {
-
-    }
 
     StandController _stand = null;
     List<CustomerController> customers = new List<CustomerController>();

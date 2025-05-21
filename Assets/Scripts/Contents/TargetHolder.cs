@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class TargetHolder : MonoBehaviour
 {
+    [SerializeField]
     public GameObject TargetObj { get; set; } = null;
     public Vector3 Offset { get; set; } = Vector3.zero;
     public float Range { get; set; } = 0.0f;
@@ -37,5 +38,13 @@ public class TargetHolder : MonoBehaviour
 
         direction.y = 0f;
         return true;
+    }
+
+    public bool IsReached
+    {
+        get
+        {
+            
+        }
     }
 }

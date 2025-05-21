@@ -21,6 +21,22 @@ public class TableController : ProbController
         StateMachine.RegisterState<StateCorruptTable>(Define.State.Corrupt, this);
 
         ProbType = Define.ProbType.Table;
-        State = Define.State.Idle;       
+        State = Define.State.Idle;
+    }
+
+    public static bool HasEmptySeat(TableController controller)
+    {
+        if (controller == null)
+        {
+            return false;
+        }
+
+        foreach(ObjectHolder holder in controller._holders)
+        {
+            if (!holder.IsEmpty)
+                return false;
+        }
+
+        return true;
     }
 }

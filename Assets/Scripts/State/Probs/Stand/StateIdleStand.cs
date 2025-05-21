@@ -15,6 +15,8 @@ public class StateIdleStand : StateStand
     public override void Execute()
     {
         base.Execute();
+
+        Context.TransferStackingObjectToWaiting();
     }
 
     public override void Exit()

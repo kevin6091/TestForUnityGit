@@ -8,19 +8,13 @@ public class Stacker : MonoBehaviour
 {
     private Stack<GameObject> _stack = new Stack<GameObject>();
 
-    [SerializeField]
-    private float Speed { get; set; } = 10f;
-
     /* Local Space Offsets */
     [SerializeField]
     private Vector3 _offsetFromParent = Vector3.zero;
-    [SerializeField]
-    private Vector3 _offsetFromObject = Vector3.zero;
 
     public Transform LeftHandSocket { get; private set; } = null;
     public Transform RightHandSocket { get; private set; } = null;
 
-    List<GameObject> _pizzas = new List<GameObject>();
     private StackerState _state = StackerState.IDLE;
     
     public StackerState State 
@@ -42,6 +36,7 @@ public class Stacker : MonoBehaviour
     }
 
     public int Count { get { return _stack.Count; } }
+    public bool IsEmpty { get { return Count == 0; } }
 
     public enum StackerState
     {
@@ -63,29 +58,12 @@ public class Stacker : MonoBehaviour
     private void Start()
     {
         _offsetFromParent.y = 0.1f;
-        _offsetFromObject = new Vector3(0f, 1f, 1f);
-
-        if(tag != "Table")
-        {
-            for(int i = 0; i < 30; ++i)
-                _pizzas.Add(Managers.Resource.Instantiate("Foods/Pizza"));
-        }
     }
 
     float accTime = 0f;
 
     private void Update()
     {
-        accTime += Time.deltaTime;
-        if (accTime >= 0.1f)
-        {
-            accTime -= 0.1f;
-            if(_pizzas.Count > 0)
-            {
-                Push(_pizzas[_pizzas.Count - 1]);
-                _pizzas.Remove(_pizzas[_pizzas.Count - 1]);
-            }
-        }
     }
 
     public void Push(GameObject gameObject)

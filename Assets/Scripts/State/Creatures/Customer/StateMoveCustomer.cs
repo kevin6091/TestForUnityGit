@@ -17,7 +17,7 @@ public class StateMoveCustomer : StateCustomer
         Context.CrossfadeAnim("RUN", 0.2f);
         Context.LeanStacker(Quaternion.Euler(new Vector3(-5f, 0f, 0f)), 0.2f);
 
-        Context.SetDestinationToTarget();
+        //  Context.SetDestinationToTarget();
 
         //  CoroutineHelper.MyStartCoroutine(Context, Context.Co_MoveToTarget());
     }
@@ -26,7 +26,7 @@ public class StateMoveCustomer : StateCustomer
     {
         base.Execute();
 
-        //  Context.MoveToTarget();
+        Context.MoveToTarget();
         Context.RotateToTarget();
         Context.UpdateArm();
 

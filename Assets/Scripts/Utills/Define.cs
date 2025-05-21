@@ -11,6 +11,15 @@ namespace Define
         Idle,
         Work,
         Corrupt,
+        Eat,
+        Wait,
+        END,
+    }
+
+    public enum ItemType
+    {
+        Pizza,
+        Trash,
         END,
     }
 
