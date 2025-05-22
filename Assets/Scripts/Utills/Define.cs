@@ -10,7 +10,15 @@ namespace Define
         Move,
         Idle,
         Work,
+        Wait,
         Corrupt,
+        END,
+    }
+
+    public enum ItemType
+    {
+        Pizza,
+        Trash,
         END,
     }
 

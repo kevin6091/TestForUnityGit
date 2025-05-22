@@ -11,6 +11,7 @@ public class Managers : MonoBehaviour
     private static Managers s_instance;
     private DataManager _data = new DataManager();
     private InputManager _input = new InputManager();
+    private ItemManager _item = new ItemManager();
     private PathManager _path = new PathManager();
     private PoolManager _pool = new PoolManager();
     private ProbManager _prob = new ProbManager();
@@ -27,6 +28,7 @@ public class Managers : MonoBehaviour
     private static Managers Instance { get { Init(); return s_instance; } }
     public static DataManager Data { get { return Instance._data; } }
     public static InputManager Input { get { return Instance._input; } }
+    public static ItemManager Item { get { return Instance._item; } }
     public static PathManager Path { get { return Instance._path; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static ProbManager Prob { get { return Instance._prob; } }
@@ -79,6 +81,7 @@ public class Managers : MonoBehaviour
         Pool.Init();
         Data.Init();
         Input.Init();
+        Item.Init();
         WorkMediator.Init();
         Sequence.Init();
         Prob.Init();
@@ -89,6 +92,7 @@ public class Managers : MonoBehaviour
         Sound.Clear();
         Sequence.Clear();
         Input.Clear();
+        Item.Clear();
         Scene.Clear();
         UI.Clear();
         Pool.Clear();

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ProbManager : BaseManager
 {
-    public Dictionary<Define.ProbType, HashSet<ProbController>> Probs { get; private set; } = new Dictionary<Define.ProbType, HashSet<ProbController>>();
+    Dictionary<Define.ProbType, HashSet<ProbController>> Probs { get; set; } = new Dictionary<Define.ProbType, HashSet<ProbController>>();
     private Dictionary<Define.ProbType, GameObject> ProbRoots { get; set; } = new Dictionary<Define.ProbType, GameObject>();
 
     public override void Init()
@@ -63,8 +63,13 @@ public class ProbManager : BaseManager
         return null;
     }
 
-    public bool ReleaseProb(ProbController controller, float time = 0f)
+    public bool DestoryProb(ProbController controller, float time = 0f)
     {
+        if(controller == null)
+        {
+            return false;
+        }    
+
         GameObject gameObject = controller.gameObject;
         Define.ProbType type = controller.ProbType;
 
