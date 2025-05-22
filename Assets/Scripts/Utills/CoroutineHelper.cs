@@ -28,7 +28,7 @@ public class CoroutineHelper : MonoBehaviour
             OutCoroutine = coroutine;
         }
     }
-    
+
     public static CoroutineHelper Instance
     {
         get
@@ -68,7 +68,7 @@ public class CoroutineHelper : MonoBehaviour
         return CoroutineDict[obj][routineName];
     }
 
-    public static CoOutInfo MyStartCoroutine(object obj, IEnumerator routine)
+    public static CoOutInfo MyStartCoroutine(object obj, IEnumerator routine, bool recursion)
     {
         if (obj == null || routine == null)
         {
@@ -83,19 +83,26 @@ public class CoroutineHelper : MonoBehaviour
             CoroutineDict.Add(obj, new Dictionary<string, CoOutInfo>());
         }
 
+
         // 이미 있던 루틴이었다면 어떻게 할지.. -> 중복 실행을 허용한다. 키를 새로 만들어준다.
         if (CoroutineDict[obj].ContainsKey(routineName) == true)
         {
-            _duplicatedKeys.TryAdd(routineName, 0);
-            _duplicatedKeys[routineName]++;
-            routineName += _duplicatedKeys[routineName];
+            if (recursion == true)
+            {
+                _duplicatedKeys.TryAdd(routineName, 0);
+                _duplicatedKeys[routineName]++;
+                routineName += _duplicatedKeys[routineName];
+            }
+            else
+            {
+                MyStopCoroutine(obj, routine);
+            }
+
         }
 
         Coroutine coroutine = Instance.StartCoroutine(routine);
 
-        //Debug.Log(coroutine + $"{Time.time}");
-
-        if(coroutine != null)
+        if (coroutine != null)
         {
             CoOutInfo info = new CoOutInfo(routineName, routine, coroutine);
             CoroutineDict[obj].Add(routineName, info);
@@ -147,16 +154,17 @@ public class CoroutineHelper : MonoBehaviour
             return false;
         }
 
-        foreach(var pair in CoroutineDict[obj])
+        foreach (var pair in CoroutineDict[obj])
         {
             Instance.StopCoroutine(pair.Value.OutCoroutine);
         }
-        CoroutineDict[obj].Clear();
-        
+
+        CoroutineDict.Remove(obj);
+
         return true;
     }
 
-    public static bool RemoveCoroutineDict(object obj, IEnumerator routine) 
+    public static bool RemoveCoroutine(object obj, IEnumerator routine)
     {
         if (obj == null || routine == null)
         {
@@ -166,7 +174,7 @@ public class CoroutineHelper : MonoBehaviour
 
         string routineName = routine.GetType().Name;
 
-        if(CoroutineDict.ContainsKey(obj) == false)
+        if (CoroutineDict.ContainsKey(obj) == false)
         {
             Debug.LogError("CoroutineHelper : Not contains key obj");
             return false;

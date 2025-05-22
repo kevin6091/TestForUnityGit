@@ -109,6 +109,7 @@ namespace Define
     {
         Player,
         Employee,
+        None,
     }
 }
 
