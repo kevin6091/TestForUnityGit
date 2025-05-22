@@ -82,7 +82,7 @@ public abstract class CreatureController : MonoBehaviour
             if (Target.DirectionXZ(out Vector3 dir) == false ||
                 IsReachedTarget())
             {
-                CoroutineHelper.RemoveCoroutineDict(this, Co_MoveToTarget());
+                CoroutineHelper.RemoveCoroutine(this, Co_MoveToTarget());
                 yield break;
             }
 
@@ -153,7 +153,7 @@ public abstract class CreatureController : MonoBehaviour
     public bool IsReachedTarget()
     {
         if(Target.DirectionXZ(out Vector3 dir))
-            return dir.magnitude < Mathf.Epsilon;
+            return dir.magnitude < Mathf.Epsilon + Target.Range;
 
         return true;
     }

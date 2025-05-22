@@ -13,13 +13,18 @@ public class StateMoveEmployee : StateEmployee
 
         Context.CrossfadeAnim("RUN", 0.2f);
         Context.LeanStacker(Quaternion.Euler(new Vector3(-5f, 0f, 0f)), 0.2f);
+        Context.SetDestinationToTarget();
     }
 
     public override void Execute()
     {
         base.Execute();
 
+        Context.RotateToTarget();
         Context.UpdateArm();
+
+        if (Context.IsReachedTarget())
+            Context.State = Define.State.Idle;
     }
 
     public override void Exit()
@@ -28,5 +33,6 @@ public class StateMoveEmployee : StateEmployee
 
         Context.LeanStacker(Quaternion.Euler(new Vector3(2f, 0f, 0f)), 0.15f);
         Context.LeanStacker(Quaternion.identity, 0.1f, 0.15f);
+        Context.Agent.ResetPath();
     }
 }

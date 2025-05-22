@@ -9,6 +9,7 @@ public class EmployeeManager : BaseManager
     private Queue<EmployeeController> Employees { get; } = new Queue<EmployeeController>();
 
     public EmployeeController TryPeekEmployees { get { return Employees.Count() > 0 ? Employees.Peek() : null; } }
+    public EmployeeController DeQueueEmployees { get { return Employees.Dequeue(); } }
 
     public GameObject Root
     {

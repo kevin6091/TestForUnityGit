@@ -9,15 +9,16 @@ public class Work : MonoBehaviour
     public float WorkRange { get; protected set; }
     public Define.Worker Worker { get; protected set; }
 
-    public void AarrivedWork(Define.Worker worker)
+    public void Co_ArrivedWork(Define.Worker worker)
     {
         Worker = worker;
         IsWorking = true;
     }
 
-    public virtual IEnumerator Co_WorkRoutine()
+    public virtual IEnumerator Co_WorkRoutine(IEnumerator employeeEscapeRoutine)
     {
         // Todo : 각자 Work에서 해야할 Routine을 자식 클래스가 override해야함.
+        yield return null;
         yield break;
     }
 
@@ -32,8 +33,10 @@ public class Work : MonoBehaviour
                 if(Worker == Define.Worker.Player)
                 {
                     StartCoroutine(employeeEscapeRoutine);
+                    Managers.Work.AddWork(this);
                 }
 
+                CoroutineHelper.RemoveCoroutine(this, Co_CheckIsWorking(null, null));
                 yield break;
             }
 
@@ -41,18 +44,21 @@ public class Work : MonoBehaviour
         }
     }
 
-    public IEnumerator Co_MoveToWorkRoutine(Transform employeeTransform, float moveSpeed)
+    public IEnumerator Co_MoveToWorkRoutine(EmployeeController employee, IEnumerator employeeEscapeRoutine)
     {
-        Vector3 targetDir = (transform.position - employeeTransform.position).normalized;
+        employee.Target.TargetObj = gameObject;
+        employee.State = Define.State.Move;
+        employee.Target.Range = WorkRange = 0.25f;
 
         while (true)
         {
-            employeeTransform.position += targetDir * moveSpeed * Time.deltaTime;
-            // Todo : 알바들 회전 넣어야함
-            if ((transform.position - employeeTransform.position).magnitude <= WorkRange)
+            if ((transform.position - employee.transform.position).magnitude <= WorkRange)
             {
-                AarrivedWork(Define.Worker.Employee);
-                StartCoroutine(this.Co_WorkRoutine());
+                Co_ArrivedWork(Define.Worker.Employee);
+                StartCoroutine(this.Co_WorkRoutine(employeeEscapeRoutine));
+
+                yield return null;
+                CoroutineHelper.RemoveCoroutine(this, Co_MoveToWorkRoutine(null, null));
                 yield break;
             }
 

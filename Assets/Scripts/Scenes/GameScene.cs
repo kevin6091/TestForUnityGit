@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameScene : BaseScene
 {
+    public PlayerController GamePlayer { get; private set; } = null;
+
     protected override void Init()
     {
         base.Init();
@@ -35,11 +37,14 @@ public class GameScene : BaseScene
 
         GameObject go = Managers.Prob.CreateProb(Define.ProbType.Table);
         go.transform.position = Vector3.zero;
+
+        // Todo : UnityChan -> Player
+        GamePlayer = GameObject.Find("UnityChan").GetComponent<PlayerController>();
     }
 
     public override void Clear()
     {
-
+        GamePlayer = null;
     }
 
     StandController _stand = null;

@@ -40,6 +40,12 @@ public class PlayerController : CreatureController
         }
 
         Managers.UI.ShowSceneUI<UI_Joystick>("UI_Joystick");
+
+        for (int i = 0; i < 7; i++)
+        {
+            EmployeeController employee = (Managers.Resource.Instantiate("Employee/Employee")).GetComponent<EmployeeController>();
+            Managers.Employee.AddEmployee(employee);
+        }
     }
 
     void JoyStickMove(object[] objects)
