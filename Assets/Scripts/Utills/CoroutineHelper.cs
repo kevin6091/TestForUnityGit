@@ -102,25 +102,19 @@ public class CoroutineHelper : MonoBehaviour
 
         Coroutine coroutine = Instance.StartCoroutine(routine);
 
-        if (coroutine != null)
-        {
+        //if (coroutine != null)
+        //{
             CoOutInfo info = new CoOutInfo(routineName, routine, coroutine);
             CoroutineDict[obj].Add(routineName, info);
             return info;
-        }
+        //}
 
-        Debug.LogError("CoroutineHelper : Failed StartCoroutine");
-        return new CoOutInfo();
+        //Debug.LogError("CoroutineHelper : Failed StartCoroutine");
+        //return new CoOutInfo();
     }
 
     public static bool MyStopCoroutine(object obj, IEnumerator routine)
     {
-        if (obj == null || routine == null)
-        {
-            Debug.LogError("CoroutineHelper : null obj, routine");
-            return false;
-        }
-
         string routineName = routine.GetType().Name;
 
         if (CoroutineDict.ContainsKey(obj) == false)
@@ -135,9 +129,15 @@ public class CoroutineHelper : MonoBehaviour
             return false;
         }
 
-        Instance.StopCoroutine(CoroutineDict[obj][routineName].OutCoroutine);
-        CoroutineDict[obj].Remove(routineName);
-        return true;
+        Coroutine coroutine = CoroutineDict[obj][routineName].OutCoroutine;
+
+        if (RemoveCoroutine(obj, routine))
+        {
+            if(coroutine != null)
+                Instance.StopCoroutine(coroutine);
+            return true;
+        }
+        return false;
     }
 
     public static bool MyStopAllCoroutines(object obj)

@@ -41,6 +41,10 @@ public class PlayerController : CreatureController
 
         Managers.UI.ShowSceneUI<UI_Joystick>("UI_Joystick");
 
+        //Test
+
+        Stat.MoveSpeed = 10.0f;
+
         for (int i = 0; i < 7; i++)
         {
             EmployeeController employee = (Managers.Resource.Instantiate("Employee/Employee")).GetComponent<EmployeeController>();

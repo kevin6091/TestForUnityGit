@@ -14,9 +14,11 @@ public class WorkMediator : BaseManager
             work = Managers.Work.DeQueueToWorks;
             employee = Managers.Employee.DeQueueEmployees;
 
+            IEnumerator eacaperoutine = employee.Co_WorkEscapeRoutine();
+
             // 알바를 Work로 이동시키는 코루틴 실행
-            CoroutineHelper.CoOutInfo outInfo = CoroutineHelper.MyStartCoroutine(work, work.Co_MoveToWorkRoutine(employee, employee.Co_WorkEscapeRoutine()), false);
-            CoroutineHelper.MyStartCoroutine(work, work.Co_CheckIsWorking(employee.Co_WorkEscapeRoutine(), outInfo.OutRoutine), false);
+            work.MoveToWorkCoroutine = work.StartCoroutine(work.Co_MoveToWorkRoutine(employee, eacaperoutine));
+            work.StartCoroutine(work.Co_CheckIsWorking(eacaperoutine));
         }
     }
 }

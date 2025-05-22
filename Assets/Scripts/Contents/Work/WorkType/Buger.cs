@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Buger : Work
@@ -14,7 +15,9 @@ public class Buger : Work
         // Todo : Test 
         if(Worker == Define.Worker.None && (((GameScene)Managers.Scene.CurrentScene).GamePlayer.transform.position - transform.position).magnitude < 2.0f)
         {
-            Co_ArrivedWork(Define.Worker.Player);
+            ArrivedWork(Define.Worker.Player);
+            StartCoroutine(Co_WorkRoutine(null));
+            Managers.Resource.Instantiate("Test/WorkDoneParticleRed", transform);
         }
     }
 
@@ -22,12 +25,19 @@ public class Buger : Work
     {
         yield return null;
 
-        StartCoroutine(employeeEscapeRoutine);
+        if (Worker == Define.Worker.Employee)
+        {
+            if(employeeEscapeRoutine != null)
+                StartCoroutine(employeeEscapeRoutine);
+            Managers.Resource.Instantiate("Test/WorkDoneParticle", transform);
+        }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.5f);
+
+        Managers.Work.AddWork(this);
+        PreWorker = Worker;
         Worker = Define.Worker.None;
         IsWorking = false;
-        Managers.Work.AddWork(this);
 
         yield break;
     }

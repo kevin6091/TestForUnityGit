@@ -56,12 +56,11 @@ public class EmployeeController : CreatureController
     {
         // Todo :  알바가 현재 Work의 소유권을 뺏겼다.. (플레이어가 먼저 소유 등등)
         // State를 잠자는걸로 바꾸는 등 탈출 구문을 추가해야함.
+        yield return null;
 
         State = Define.State.Idle;
         Managers.Employee.AddEmployee(this);
 
-        Managers.Resource.Instantiate("Test/WorkDoneParticle", transform);
-        
         yield break;
     }
 }

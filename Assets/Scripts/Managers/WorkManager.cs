@@ -11,8 +11,9 @@ public class WorkManager : BaseManager
     private Queue<Work> ToWorks { get; } = new Queue<Work>();
 
     public Work TryPeekToWorks { get { return ToWorks.Count() > 0 ? ToWorks.Peek() : null; } }
+    public Work DeQueueToWorks { get { Work ele = ToWorks.Dequeue(); OuterWork.Add(ele); return ele; } }
 
-    public Work DeQueueToWorks { get { return ToWorks.Dequeue(); } }
+    private List<Work> OuterWork = new List<Work>();
 
     public GameObject Root
     {
@@ -46,6 +47,12 @@ public class WorkManager : BaseManager
 
     public void AddWork(Work work)
     {
+        OuterWork.Remove(work);
+        if (OuterWork.Contains(work))
+        {
+            int a = 0;
+            a += 1;
+        }
         ToWorks.Enqueue(work);
     }
 

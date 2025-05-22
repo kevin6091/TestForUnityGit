@@ -7,9 +7,12 @@ public class Work : MonoBehaviour
 {
     public bool IsWorking { get; protected set; }
     public float WorkRange { get; protected set; }
-    public Define.Worker Worker { get; protected set; }
+    public Define.Worker Worker { get; protected set; } = Define.Worker.None;
+    public Define.Worker PreWorker { get; protected set; } = Define.Worker.None;
 
-    public void Co_ArrivedWork(Define.Worker worker)
+    public Coroutine MoveToWorkCoroutine { get; set; } = null;
+
+    public void ArrivedWork(Define.Worker worker)
     {
         Worker = worker;
         IsWorking = true;
@@ -22,21 +25,24 @@ public class Work : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator Co_CheckIsWorking(IEnumerator employeeEscapeRoutine, IEnumerator moveToWorkRoutine)
+    public IEnumerator Co_CheckIsWorking(IEnumerator employeeEscapeRoutine)
     {
+        yield return null;
+
         while (true)
         {
             if (IsWorking == true)
             {
-                CoroutineHelper.MyStopCoroutine(this, moveToWorkRoutine);
-
                 if(Worker == Define.Worker.Player)
                 {
                     StartCoroutine(employeeEscapeRoutine);
-                    Managers.Work.AddWork(this);
+                    StopCoroutine(MoveToWorkCoroutine);
+                }
+                else if(Worker == Define.Worker.Employee)
+                {
+                    StartCoroutine(this.Co_WorkRoutine(employeeEscapeRoutine));
                 }
 
-                CoroutineHelper.RemoveCoroutine(this, Co_CheckIsWorking(null, null));
                 yield break;
             }
 
@@ -46,6 +52,8 @@ public class Work : MonoBehaviour
 
     public IEnumerator Co_MoveToWorkRoutine(EmployeeController employee, IEnumerator employeeEscapeRoutine)
     {
+        yield return null;
+
         employee.Target.TargetObj = gameObject;
         employee.State = Define.State.Move;
         employee.Target.Range = WorkRange = 0.25f;
@@ -54,11 +62,8 @@ public class Work : MonoBehaviour
         {
             if ((transform.position - employee.transform.position).magnitude <= WorkRange)
             {
-                Co_ArrivedWork(Define.Worker.Employee);
-                StartCoroutine(this.Co_WorkRoutine(employeeEscapeRoutine));
+                ArrivedWork(Define.Worker.Employee);
 
-                yield return null;
-                CoroutineHelper.RemoveCoroutine(this, Co_MoveToWorkRoutine(null, null));
                 yield break;
             }
 
