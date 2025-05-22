@@ -89,8 +89,13 @@ public class Stacker : MonoBehaviour
         if(_stack.Count == 0) 
             return null;
 
-        _stack.Peek().transform.parent = parent;
-        return _stack.Pop();
+        GameObject gameObject = _stack.Pop();
+        gameObject.transform.parent = parent;
+
+        if(Count > 0)
+            _stack.Peek().transform.parent = transform;
+
+        return gameObject;
     }
 
 
