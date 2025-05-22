@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    //  [SerializeField]
-    //  public Define.ItemType itemType { get; private set; } = Define.ItemType.END;
+    [SerializeField]
+    public Define.ItemType itemType { get; private set; } = Define.ItemType.END;
 }
