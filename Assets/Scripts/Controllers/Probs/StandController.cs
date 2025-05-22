@@ -24,5 +24,23 @@ public class StandController : ProbController
 
         //  Todo : Refactoring
         WaitingLine.Offset = WaitingLine.transform.forward * -1f * 2f;
+
+        for(int i = 0; i < 2; ++i)
+        {
+            Item item = Managers.Item.CreateItem(Define.ItemType.Pizza);
+            Stacker.Push(item.gameObject); 
+        }
+
+        StartCoroutine(Co_Test());
+    }
+
+    public IEnumerator Co_Test()
+    {
+        yield return new WaitForSeconds(5f);
+        while (Stacker.Count != 0)
+        {
+            GameObject go = Stacker.Pop();
+            Managers.Item.DestoyItem(go);
+        }
     }
 }

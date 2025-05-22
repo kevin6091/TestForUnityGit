@@ -12,11 +12,15 @@ public class ResourceManager : BaseManager
             string name = path;
             int index = name.LastIndexOf('/');
             if (index >= 0)
+            {
                 name = name.Substring(index + 1);
+            }
 
             GameObject gameObject = Managers.Pool.GetOriginal(name);
             if (gameObject != null)
+            {
                 return gameObject as T;
+            }
         }
 
         return Resources.Load<T>(path);
@@ -33,8 +37,9 @@ public class ResourceManager : BaseManager
 
         Poolable poolable = Managers.Pool.TryGetOrCachePoolable(original);
         if (null != poolable)
-        //  if(original.GetComponent<Poolable>() != null)
+        {
             return Managers.Pool.Pop(original, parent).gameObject;
+        }
 
         GameObject gameObject = Object.Instantiate(original, parent);
         gameObject.name = original.name;
@@ -53,15 +58,9 @@ public class ResourceManager : BaseManager
         Poolable poolable = Managers.Pool.TryGetOrCachePoolable(gameObject);
         if (null != poolable)
         {
-            Managers.Pool.Push(poolable);
+            Managers.Pool.Push(gameObject.GetComponent<Poolable>());
+            return;
         }
-
-        //Poolable poolable = gameObject.GetComponent<Poolable>();
-        //if (poolable != null)
-        //{
-        //    Managers.Pool.Push(poolable);
-        //    return;
-        //}
 
         Object.Destroy(gameObject);
     }
