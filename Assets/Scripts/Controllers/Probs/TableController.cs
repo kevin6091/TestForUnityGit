@@ -24,6 +24,14 @@ public class TableController : ProbController
         State = Define.State.Idle;
     }
 
+    public void ClearSeat()
+    {
+        foreach(ObjectHolder holder in _holders)
+        {
+            holder.HoldObject = null;
+        }
+    }
+
     public static bool HasEmptySeat(TableController controller)
     {
         if (controller == null)
@@ -39,4 +47,9 @@ public class TableController : ProbController
 
         return true;
     }
+
+    //public static GameObject GetSeatObject(TableController controller)
+    //{
+
+    //}
 }

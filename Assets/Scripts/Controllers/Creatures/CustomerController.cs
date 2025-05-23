@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CustomerController : CreatureController
 {
@@ -17,6 +19,7 @@ public class CustomerController : CreatureController
 
         StateMachine.RegisterState<StateIdleCustomer>(Define.State.Idle, this);
         StateMachine.RegisterState<StateMoveCustomer>(Define.State.Move, this);
+        StateMachine.RegisterState<StateEatCustomer>(Define.State.Eat, this);
 
         State = Define.State.Idle;
 
@@ -39,7 +42,7 @@ public class CustomerController : CreatureController
 
     public void UpdateArm()
     {
-        if (0 == Stacker.Count)
+        if (Stacker.IsEmpty)
         {
             float curWeight = _IKController.Weight;
             curWeight = Mathf.Max(curWeight - Time.deltaTime * 5f, 0f);
@@ -54,13 +57,47 @@ public class CustomerController : CreatureController
         }
     }
 
-    public void AquireItem(GameObject itemObject)
+    public IEnumerator Co_EatSequence(TableController targetTable)
     {
-        if(itemObject == null)
+        Target.TargetObj = targetTable._holders[0].gameObject;
+        Target.Range = 1f;
+        State = Define.State.Move;
+
+        while(true)
         {
-            return;
+            if(State != Define.State.Move)
+            {
+                break;
+            }
+
+            yield return null;
         }
 
-        
+        Target.Range = 0f;
+
+        while(!Stacker.IsEmpty)
+        {
+            targetTable.Stacker.Push(Stacker.Pop());
+        }
+
+        float accTime = 0f;
+
+        State = Define.State.Eat;
+        Agent.Warp(targetTable.transform.position);
+        //  Agent.isStopped = false;
+        Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+
+        while (!targetTable.Stacker.IsEmpty)
+        {
+            accTime += Time.deltaTime;
+            if(accTime >= 3f)
+            {
+                accTime -= 3f;
+                GameObject eatObject = targetTable.Stacker.Pop();
+                Managers.Item.DestoyItem(eatObject);
+            }
+
+            yield return null;
+        }
     }
 }

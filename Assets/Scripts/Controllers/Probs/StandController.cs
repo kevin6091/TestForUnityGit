@@ -32,35 +32,56 @@ public class StandController : ProbController
         WaitingLine.Offset = WaitingLine.transform.forward * -1f * 2f;
 
         //  Todo : Test
-        for(int i = 0; i < 100; ++i)
+        for (int i = 0; i < 100; ++i)
         {
-            GameObject pizza = Managers.Resource.Instantiate("Foods/Pizza");
-            Stacker.Push(pizza);
+            Stacker.Push(Managers.Item.CreateItem(Define.ItemType.Pizza).gameObject);
         }
     }
 
-    public void TransferStackingObjectToWaiting()
+    public IEnumerator Co_TransferStackingObjectToWaiting(float time)
     {
-        if (IsStackerEmpty ||
-            IsWaitingLineEmpty ||
-            WaitingLine.IsTopReached() == false)
+        float accTime = 0f;
+
+        while (true)
         {
-            return;
+            accTime += Time.deltaTime;
+
+            if (accTime >= time)
+            {
+                accTime -= time;
+
+                if (IsStackerEmpty ||
+                    IsWaitingLineEmpty ||
+                    WaitingLine.IsTopReached() == false)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                GameObject gameObject = Stacker.Pop();
+                CreatureController creature = WaitingLine.Dequeue();
+                CustomerController customer = creature as CustomerController;
+                if (customer == null)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                if(customer.Stacker.Push(gameObject) == false)
+                {
+                    yield return null;
+                    continue;
+                }    
+
+                ProbController nearestProb = Managers.Prob.GetNearestProb(Define.ProbType.Table, transform.position);
+
+                StartCoroutine(customer.Co_EatSequence((TableController)nearestProb));
+
+                //  customer.Target.TargetObj = nearestProb.gameObject;
+                //  customer.State = Define.State.Move;
+            }
+
+            yield return null;
         }
-
-        GameObject gameObject = Stacker.Pop();
-        CreatureController creature = WaitingLine.Dequeue();
-        CustomerController customer = creature as CustomerController;
-        if (customer == null)
-        {
-            return;
-        }
-
-        customer.Stacker.Push(gameObject);
-
-        ProbController nearestProb = Managers.Prob.GetNearestProb(Define.ProbType.Table, transform.position);
-
-        customer.State = Define.State.Move;
-        customer.Target.TargetObj = nearestProb.gameObject;
     }
 }

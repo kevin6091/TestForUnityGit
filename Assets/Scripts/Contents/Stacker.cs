@@ -14,6 +14,7 @@ public class Stacker : MonoBehaviour
 
     public Transform LeftHandSocket { get; private set; } = null;
     public Transform RightHandSocket { get; private set; } = null;
+    private Define.ItemType ItemType { get; set; } = Define.ItemType.END;
 
     private StackerState _state = StackerState.IDLE;
     
@@ -66,14 +67,27 @@ public class Stacker : MonoBehaviour
     {
     }
 
-    public void Push(GameObject gameObject)
+    public bool Push(GameObject gameObject)
     {
         if (null == gameObject)
-            return;
+        {
+            return false;
+        }
+
+        Define.ItemType newItemType = Managers.Item.GetType(gameObject);
+        if (!IsEmpty &&
+            newItemType != ItemType)
+        {
+            return false;
+        }
+
+        ItemType = newItemType;
 
         Transform parent = transform;
-        if (_stack.Count > 0)
+        if (!IsEmpty)
+        {
             parent = _stack.Peek().transform;
+        }
 
         gameObject.transform.SetParent(parent, true);
         //  TODO: Scale 깨지는 버그있음 이유 모름 스케일따로 안건드는데
@@ -82,18 +96,18 @@ public class Stacker : MonoBehaviour
         StartCoroutine(Co_Lean(Quaternion.identity, 0.1f, 0f));
 
         _stack.Push(gameObject);
+        return true;
     }
 
     public GameObject Pop(Transform parent = null) 
     {
-        if(_stack.Count == 0) 
+        if(IsEmpty)
+        {
             return null;
+        }
 
         GameObject gameObject = _stack.Pop();
         gameObject.transform.parent = parent;
-
-        if(Count > 0)
-            _stack.Peek().transform.parent = transform;
 
         return gameObject;
     }

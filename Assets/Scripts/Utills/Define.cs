@@ -23,13 +23,6 @@ namespace Define
         END,
     }
 
-    public enum ItemType
-    {
-        Pizza,
-        Trash,
-        END,
-    }
-
     public enum ProbType
     {
         Stand,

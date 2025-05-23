@@ -10,10 +10,9 @@ public class WaitingLine : MonoBehaviour
     private Vector3 _offset = Vector3.zero;
 
     public Vector3 Offset { get { return _offset; } set { _offset = value; } }
-
-
     public int Count { get { return _lineObjects.Count; } }
     public bool IsEmpty { get { return Count == 0; } }
+
     public bool IsTopReached()
     {
         if (IsEmpty)
@@ -26,7 +25,7 @@ public class WaitingLine : MonoBehaviour
     public void Enqueue(CreatureController creature)
     {
         creature.Target.TargetObj = gameObject;
-        creature.Target.Offset = Offset * _lineObjects.Count;
+        creature.Target.Offset = Offset * Count;
         creature.State = Define.State.Move;
 
         _lineObjects.AddLast(creature);
@@ -42,6 +41,7 @@ public class WaitingLine : MonoBehaviour
         _lineObjects.RemoveFirst();
 
         CreatureController[] lineObjects = _lineObjects.ToArray();
+
         foreach(CustomerController customerController in lineObjects)
         {
             customerController.Target.Offset -= Offset;
