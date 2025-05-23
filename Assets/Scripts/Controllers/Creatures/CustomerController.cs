@@ -47,7 +47,7 @@ public class CustomerController : CreatureController
 
         if (Needs.IsEnough)
         {
-            StartCoroutine(Co_FindEmptyTable());            
+            StartCoroutine(Co_FindEmptyTable());
         }
     }
 

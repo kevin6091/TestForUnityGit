@@ -14,7 +14,7 @@ public class StateEatCustomer : StateCustomer
 
         Context.CrossFadeSeparateAnim("EAT", "SIT", 0.2f);
 
-        Context.Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        Context.Agent.updatePosition = false;
         Context.StartCoroutine(Context.Co_LerpToObject_Wrap(Context.Target.TargetObj, 0.5f));
         Context.StartCoroutine(Context.Co_SlerpRotationToObject(Context.Target.TargetObj, 0.5f));
     }
@@ -30,7 +30,7 @@ public class StateEatCustomer : StateCustomer
     {
         base.Exit();
 
-        Context.Agent.obstacleAvoidanceType = ObstacleAvoidanceType.GoodQualityObstacleAvoidance;
+        Context.Agent.updatePosition = true;
 
         Context.EndSeparateAnim(0.2f);
     }

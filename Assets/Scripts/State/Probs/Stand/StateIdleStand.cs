@@ -8,7 +8,8 @@ public class StateIdleStand : StateStand
     { }
 
     float _accTime = 0f;
-    float _coolTime = 1f;
+    float _coolTime = 0.5f;
+    CustomerController _lastCustomer = null;
 
     public override void Enter()
     {
@@ -21,6 +22,7 @@ public class StateIdleStand : StateStand
         base.Execute();
 
         _accTime += Time.deltaTime;
+
         if (_accTime >= _coolTime)
         {
             _accTime -= _coolTime;
@@ -32,19 +34,22 @@ public class StateIdleStand : StateStand
                 return;
             }
 
-            CreatureController creatrue = Context.WaitingLine.Peek();
-            CustomerController customer = creatrue as CustomerController;
+            CreatureController creature = Context.WaitingLine.Peek();
+            CustomerController customer = creature as CustomerController;
 
             if (!customer.Needs.IsEnough)
             {
                 GameObject gameObject = Context.Stacker.Pop();
+                _lastCustomer = customer;
                 customer.Stacker.Push(gameObject);
-
-                if (customer.State == Define.State.Move)
-                {
-                    Context.WaitingLine.Dequeue();
-                }
             }
+        }
+
+        if(_lastCustomer != null &&
+            _lastCustomer.State == Define.State.Move)
+        {
+            Context.WaitingLine.Dequeue();
+            _lastCustomer = null;
         }
     }
 
