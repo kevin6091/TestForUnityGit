@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -158,6 +159,54 @@ public abstract class CreatureController : MonoBehaviour
         Quaternion rotation = Quaternion.RotateTowards(rotateSrc, rotateDst, rotateAngle);
 
         transform.rotation = rotation;
+    }
+
+    public IEnumerator Co_LerpToObject_Wrap(GameObject gameObject, float time)
+    {
+        Vector3 startPosition = transform.position;
+
+        float accTime = 0f;
+        float inverseTime = 1f / time;
+
+        Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+
+        while (true)
+        {
+            accTime += Time.deltaTime;
+            float ratio = Mathf.Min(accTime * inverseTime, 1f);
+
+            Vector3 targetPosition = gameObject.transform.position;
+            Vector3 curPos = Vector3.Lerp(startPosition, targetPosition, ratio);
+            Agent.Warp(curPos);
+
+            if (ratio >= 1f)
+            {
+                yield break;
+            }
+        }
+    }
+
+    public IEnumerator Co_SlerpRotationToObject(GameObject gameObject, float time)
+    {
+        Quaternion startRotation = transform.rotation;
+
+        float accTime = 0f;
+        float inverseTime = 1f / time;
+
+        while (true)
+        {
+            accTime += Time.deltaTime;
+            float ratio = Mathf.Min(accTime * inverseTime, 1f);
+
+            Quaternion targetRotation = gameObject.transform.rotation;
+            Quaternion curRotation = Quaternion.Slerp(startRotation, targetRotation, ratio);
+            transform.rotation = curRotation;
+
+            if(ratio >= 1f)
+            {
+                yield break;
+            }
+        }
     }
 
     public bool IsReachedTarget()

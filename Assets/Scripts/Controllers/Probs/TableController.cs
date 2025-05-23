@@ -6,15 +6,17 @@ using UnityEngine;
 public class TableController : ProbController
 {
     public Stacker Stacker { get; private set; } = null;
-    public List<ObjectHolder> _holders = new List<ObjectHolder>();
+    private List<ObjectHolder> _holders = new List<ObjectHolder>();
 
     public override void Init()
     {
         base.Init();
 
         ObjectHolder[] holders = transform.GetComponentsInChildren<ObjectHolder>();
-        foreach(ObjectHolder holder in holders) 
+        foreach(ObjectHolder holder in holders)
+        {
             _holders.Add(holder);
+        }
 
         Stacker = GetComponentInChildren<Stacker>();
         StateMachine.RegisterState<StateIdleTable>(Define.State.Idle, this);
@@ -32,20 +34,39 @@ public class TableController : ProbController
         }
     }
 
-    public static bool HasEmptySeat(TableController controller)
+    public static bool HasEmptySeat(ProbController prob)
     {
-        if (controller == null)
+        if (prob == null)
         {
             return false;
         }
 
-        foreach(ObjectHolder holder in controller._holders)
+        TableController table = prob as TableController;
+        if(table == null)
         {
-            if (!holder.IsEmpty)
-                return false;
+            return false;
+        }    
+
+        foreach(ObjectHolder holder in table._holders)
+        {
+            if (holder.IsEmpty)
+                return true;
         }
 
-        return true;
+        return false;
+    }
+
+    public ObjectHolder GetEmptySeat()
+    {
+        foreach(ObjectHolder holder in _holders)
+        {
+            if(holder.IsEmpty)
+            {
+                return holder;
+            }
+        }
+
+        return null;
     }
 
     //public static GameObject GetSeatObject(TableController controller)

@@ -34,7 +34,13 @@ public class GameScene : BaseScene
     List<GameObject> customerObjects = new List<GameObject>();
     public void TestInit()
     {
-        Managers.Prob.CreateProb(Define.ProbType.Table);
+        GameObject table1 = Managers.Prob.CreateProb(Define.ProbType.Table);
+        //  GameObject table2 = Managers.Prob.CreateProb(Define.ProbType.Table);
+        //  GameObject table3 = Managers.Prob.CreateProb(Define.ProbType.Table);
+
+        table1.transform.position = new Vector3(9f, 0f, 0f); 
+        //  table2.transform.position = new Vector3(3f, 0f, 0f); 
+        //  table3.transform.position = new Vector3(6f, 0f, 0f); 
 
         GameObject standGameObject = Managers.Prob.CreateProb(Define.ProbType.Stand);
         standGameObject.transform.position = new Vector3(6f, 0f, -6f);
@@ -46,7 +52,6 @@ public class GameScene : BaseScene
             go.transform.position = pos;
             customerObjects.Add(go);
         }
-
     }
 
     public IEnumerator Co_Test()

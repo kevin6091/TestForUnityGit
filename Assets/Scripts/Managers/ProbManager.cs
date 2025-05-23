@@ -87,7 +87,7 @@ public class ProbManager : BaseManager
 
     //  외부에서 selectorFunc 를 추가로 던지면 제약조건이된다. 
     //  ex) Table의 빈좌석이있는지 확인하는 함수를 던진다.
-    public ProbController GetNearestProb(Define.ProbType type, Vector3 pos, Func<bool, ProbController> selectFunc = null)
+    public ProbController GetNearestProb(Define.ProbType type, Vector3 pos, Func<ProbController, bool> selectFunc = null)
     {
         ProbController controller = null;
 

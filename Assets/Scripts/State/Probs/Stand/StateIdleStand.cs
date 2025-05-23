@@ -7,29 +7,49 @@ public class StateIdleStand : StateStand
     public StateIdleStand(StateMachine stateMachine, MonoBehaviour context) : base(stateMachine, context)
     { }
 
-    Coroutine coroutineHandle = null;
+    float _accTime = 0f;
+    float _coolTime = 1f;
 
     public override void Enter()
     {
         base.Enter();
-
-        coroutineHandle = Context.StartCoroutine(Context.Co_TransferStackingObjectToWaiting(0.5f));
+        _accTime = 0f;
     }
 
     public override void Execute()
     {
         base.Execute();
 
+        _accTime += Time.deltaTime;
+        if (_accTime >= _coolTime)
+        {
+            _accTime -= _coolTime;
+
+            if (Context.IsStackerEmpty ||
+                Context.IsWaitingLineEmpty ||
+                Context.WaitingLine.IsTopReached() == false)
+            {
+                return;
+            }
+
+            CreatureController creatrue = Context.WaitingLine.Peek();
+            CustomerController customer = creatrue as CustomerController;
+
+            if (!customer.Needs.IsEnough)
+            {
+                GameObject gameObject = Context.Stacker.Pop();
+                customer.Stacker.Push(gameObject);
+
+                if (customer.State == Define.State.Move)
+                {
+                    Context.WaitingLine.Dequeue();
+                }
+            }
+        }
     }
 
     public override void Exit()
     {
         base.Exit();
-
-        if(coroutineHandle != null)
-        {
-            Context.StopCoroutine(coroutineHandle);
-            coroutineHandle = null;
-        }
     }
 }
