@@ -12,6 +12,8 @@ public abstract class ProbController : MonoBehaviour
 
     public Define.ProbType ProbType { get; protected set; } = Define.ProbType.END;
 
+    protected Work Work { get; set; } = null;
+
     public Define.State State
     {
         get { return _stateMachine.CurStateType(); }
@@ -34,5 +36,17 @@ public abstract class ProbController : MonoBehaviour
         Obstacle = gameObject.GetOrAddComponent<NavMeshObstacle>();
 
         Obstacle.carving = true;
+        Work = transform.GetComponentInChildren<Work>();
+        
+    }
+
+    protected void OnStackerEmpty()
+    {
+        Work.OnStackerEmpty();
+    }
+
+    protected void OnStackerPush()
+    {
+        Work.OnStackerPush();
     }
 }

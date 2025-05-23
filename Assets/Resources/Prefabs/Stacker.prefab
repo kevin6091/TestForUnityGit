@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _offsetFromParent: {x: 0, y: 0, z: 0}
-  _offsetFromObject: {x: 0, y: 0, z: 0}
 --- !u!54 &7419455627252709457
 Rigidbody:
   m_ObjectHideFlags: 0

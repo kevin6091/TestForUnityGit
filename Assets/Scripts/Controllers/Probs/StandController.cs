@@ -38,6 +38,10 @@ public class StandController : ProbController
         {
             Stacker.Push(Managers.Item.CreateItem(Define.ItemType.Pizza).gameObject);
         }
+
+        Stacker.emptyEvent += OnStackerEmpty;
+        Stacker.pushEvent += OnStackerPush;
+        Work.Stacker = Stacker;
     }
 
     private void OnWaitingLineTopReached()

@@ -9,8 +9,18 @@ public class Trash : Work
         
     }
 
-    void Update()
+    protected override void OnTriggerEnter(Collider other)
     {
-        
+        CheckPlayer();
+    }
+
+    protected override void OnTriggerStay(Collider other)
+    {
+
+    }
+
+    protected override void OnTriggerExit(Collider other)
+    {
+
     }
 }

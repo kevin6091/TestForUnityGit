@@ -3,18 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class Work : MonoBehaviour
+public abstract class Work : MonoBehaviour
 {
     public bool IsWorking { get; protected set; }
     public float WorkRange { get; protected set; }
     public Define.Worker Worker { get; protected set; } = Define.Worker.None;
     public Define.Worker PreWorker { get; protected set; } = Define.Worker.None;
     public Coroutine MoveToWorkCoroutine { get; set; } = null;
+    public EmployeeController Employee { get; set; } = null;
 
-    public void ArrivedWork(Define.Worker worker)
+    public bool IsWorkDone { get; protected set; }
+    public Stacker Stacker { get; set; }
+
+    protected void ArrivedWork(Define.Worker worker)
     {
         Worker = worker;
         IsWorking = true;
+    }
+
+    protected void LeaveWork()
+    {
+        Worker = Define.Worker.None;
+        IsWorking = false;
+    }
+
+    protected void AddWork()
+    {
+        Managers.Work.AddWork(this);
+        Employee = null;
     }
 
     public virtual IEnumerator Co_WorkRoutine(IEnumerator employeeEscapeRoutine)
@@ -34,16 +50,16 @@ public class Work : MonoBehaviour
                 {
                     StartCoroutine(employeeEscapeRoutine);
                     StopCoroutine(MoveToWorkCoroutine);
-                    Managers.Work.AddWork(this);
+                    AddWork();
                 }
                 else if (Worker == Define.Worker.Employee) // 알바가 뺏기지 않고 일에 도착했다.
                 {
                     StartCoroutine(this.Co_WorkRoutine(employeeEscapeRoutine));
                 }
-
+             
                 yield break;
             }
-
+             
             yield return null;
         }
     }
@@ -61,6 +77,7 @@ public class Work : MonoBehaviour
             if ((transform.position - employee.transform.position).magnitude <= WorkRange)
             {
                 ArrivedWork(Define.Worker.Employee);
+                Employee = employee;
 
                 yield break;
             }
@@ -68,4 +85,27 @@ public class Work : MonoBehaviour
             yield return null;
         }
     }
+
+    protected void CheckPlayer()
+    {
+        if (Worker == Define.Worker.None)
+        {
+            ArrivedWork(Define.Worker.Player);
+            Managers.Resource.Instantiate("Test/WorkDoneParticleRed", transform);
+        }
+    }
+
+    public void OnStackerEmpty()
+    {
+        IsWorkDone = true;
+    }
+
+    public void OnStackerPush()
+    {
+        IsWorkDone = false;
+    }
+
+    protected abstract void OnTriggerEnter(Collider other);
+    protected abstract void OnTriggerStay(Collider other);
+    protected abstract void OnTriggerExit(Collider other);
 }
