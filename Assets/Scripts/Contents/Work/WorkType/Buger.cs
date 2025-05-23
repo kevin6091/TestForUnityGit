@@ -21,21 +21,20 @@ public class Buger : Work
         }
     }
 
-    public override IEnumerator Co_WorkRoutine(IEnumerator employeeEscapeRoutine)
+    public override IEnumerator Co_WorkRoutine(IEnumerator employeeWorkDoneRoutine)
     {
-        yield return null;
-
         if (Worker == Define.Worker.Employee)
         {
-            if(employeeEscapeRoutine != null)
-                StartCoroutine(employeeEscapeRoutine);
+            if(employeeWorkDoneRoutine != null)
+                StartCoroutine(employeeWorkDoneRoutine);
             Managers.Resource.Instantiate("Test/WorkDoneParticle", transform);
         }
 
         yield return new WaitForSeconds(0.5f);
 
-        Managers.Work.AddWork(this);
-        PreWorker = Worker;
+        if(Worker == Define.Worker.Employee)
+            Managers.Work.AddWork(this);
+        
         Worker = Define.Worker.None;
         IsWorking = false;
 

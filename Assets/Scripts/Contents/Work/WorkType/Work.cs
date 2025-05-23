@@ -9,7 +9,6 @@ public class Work : MonoBehaviour
     public float WorkRange { get; protected set; }
     public Define.Worker Worker { get; protected set; } = Define.Worker.None;
     public Define.Worker PreWorker { get; protected set; } = Define.Worker.None;
-
     public Coroutine MoveToWorkCoroutine { get; set; } = null;
 
     public void ArrivedWork(Define.Worker worker)
@@ -21,24 +20,23 @@ public class Work : MonoBehaviour
     public virtual IEnumerator Co_WorkRoutine(IEnumerator employeeEscapeRoutine)
     {
         // Todo : 각자 Work에서 해야할 Routine을 자식 클래스가 override해야함.
-        yield return null;
         yield break;
     }
 
     public IEnumerator Co_CheckIsWorking(IEnumerator employeeEscapeRoutine)
     {
-        yield return null;
-
+        // 여기의 전제는 큐에서 뽑아서 알바와 매칭됐을 때 들어온다.
         while (true)
         {
             if (IsWorking == true)
             {
-                if(Worker == Define.Worker.Player)
+                if(Worker == Define.Worker.Player) // 알바가 뺏긴거다.
                 {
                     StartCoroutine(employeeEscapeRoutine);
                     StopCoroutine(MoveToWorkCoroutine);
+                    Managers.Work.AddWork(this);
                 }
-                else if(Worker == Define.Worker.Employee)
+                else if (Worker == Define.Worker.Employee) // 알바가 뺏기지 않고 일에 도착했다.
                 {
                     StartCoroutine(this.Co_WorkRoutine(employeeEscapeRoutine));
                 }

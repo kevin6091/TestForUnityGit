@@ -50,8 +50,7 @@ public class WorkManager : BaseManager
         OuterWork.Remove(work);
         if (OuterWork.Contains(work))
         {
-            int a = 0;
-            a += 1;
+            Debug.LogError("WorkManager : ¤¸´ñ¾î");
         }
         ToWorks.Enqueue(work);
     }

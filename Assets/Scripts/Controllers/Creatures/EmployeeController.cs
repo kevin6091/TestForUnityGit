@@ -63,4 +63,12 @@ public class EmployeeController : CreatureController
 
         yield break;
     }
+
+    public IEnumerator Co_WorkDoenRoutine()
+    {
+        // 알바가 일을 끝냈다.
+        State = Define.State.Idle;
+        Managers.Employee.AddEmployee(this);
+        yield break;
+    }
 }
