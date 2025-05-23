@@ -12,51 +12,67 @@ public class GameScene : BaseScene
         base.Init();
 
         SceneType = Define.Scene.Game;
-        //  Managers.UI.ShowSceneUI<UI_Inven>();
-        //  Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
+        Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
 
         gameObject.GetOrAddComponent<CursorController>();
 
         //  Todo : Refactoring
-        //  TEST Zone
-        Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] -= OnKeyboard;
-        Managers.Input.Actions[(Define.InputEvent.KeyEvent, Define.InputType.Down)] += OnKeyboard;
+        //  TestZone
+        TestInit();
+        StartCoroutine(Co_Test());
 
-        List<GameObject> matchingObjects = new List<GameObject>();
-        GameObject[] allObjects = FindObjectsOfType<GameObject>(); // 씬 내 모든 활성 오브젝트 검색
-
-        foreach (GameObject obj in allObjects)
-        {
-            if (obj.name == "Customer") // 이름 비교
-            {
-                customers.Add(obj.GetComponent<CustomerController>());
-            }
-        }
-        
-        _stand = Component.FindAnyObjectByType<StandController>();
-
-        GameObject go = Managers.Prob.CreateProb(Define.ProbType.Table);
-        go.transform.position = Vector3.zero;
-
-        // Todo : UnityChan -> Player
         GamePlayer = GameObject.Find("UnityChan").GetComponent<PlayerController>();
     }
 
     public override void Clear()
     {
-        GamePlayer = null;
+
     }
 
-    StandController _stand = null;
-    List<CustomerController> customers = new List<CustomerController>();
-    int index = 0;
-    private void OnKeyboard(object[] objects)
+    //  Todo : Refactoring
+    //  TEST Zone
+    List<GameObject> customerObjects = new List<GameObject>();
+    public void TestInit()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha5))
+        Managers.Prob.CreateProb(Define.ProbType.Table);
+
+        GameObject standGameObject = Managers.Prob.CreateProb(Define.ProbType.Stand);
+        standGameObject.transform.position = new Vector3(6f, 0f, -6f);
+
+        for(int i = 0; i < 10; ++i)
         {
-            _stand.WaitingLine.Enqueue(customers[index++]);
-            while (index >= customers.Count)
-                --index;
+            GameObject go = Managers.Resource.Instantiate("Customer");
+            Vector3 pos = new Vector3(Random.Range(-20f, 20f), 0f, Random.Range(-20f, 20f));
+            go.transform.position = pos;
+            customerObjects.Add(go);
+        }
+
+    }
+
+    public IEnumerator Co_Test()
+    {
+        yield return null;
+
+        for (int i = 0; i < customerObjects.Count; ++i)
+        {
+            GameObject go = customerObjects[i]; 
+            CustomerController customer = go.GetComponent<CustomerController>();
+            StandController nearestStand = Managers.Prob.GetNearestProb(Define.ProbType.Stand, go.transform.position) as StandController;
+
+            if (customer != null &&
+                nearestStand != null)
+            {
+                if (nearestStand.WaitingLine == null)
+                {
+                    Debug.Log("WaitingLine is null");
+                }
+                else
+                {
+                    nearestStand.WaitingLine.Enqueue(customer);
+                }
+            }
+
+            yield return new WaitForSeconds(2f);
         }
     }
 }

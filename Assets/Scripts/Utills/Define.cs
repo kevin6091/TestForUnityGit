@@ -12,6 +12,7 @@ namespace Define
         Work,
         Wait,
         Corrupt,
+        Eat,
         END,
     }
 

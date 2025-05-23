@@ -8,19 +8,14 @@ public class Stacker : MonoBehaviour
 {
     private Stack<GameObject> _stack = new Stack<GameObject>();
 
-    [SerializeField]
-    private float Speed { get; set; } = 10f;
-
     /* Local Space Offsets */
     [SerializeField]
     private Vector3 _offsetFromParent = Vector3.zero;
-    [SerializeField]
-    private Vector3 _offsetFromObject = Vector3.zero;
 
     public Transform LeftHandSocket { get; private set; } = null;
     public Transform RightHandSocket { get; private set; } = null;
+    private Define.ItemType ItemType { get; set; } = Define.ItemType.END;
 
-    List<GameObject> _pizzas = new List<GameObject>();
     private StackerState _state = StackerState.IDLE;
     
     public StackerState State 
@@ -42,6 +37,7 @@ public class Stacker : MonoBehaviour
     }
 
     public int Count { get { return _stack.Count; } }
+    public bool IsEmpty { get { return Count == 0; } }
 
     public enum StackerState
     {
@@ -63,33 +59,33 @@ public class Stacker : MonoBehaviour
     private void Start()
     {
         _offsetFromParent.y = 0.1f;
-        _offsetFromObject = new Vector3(0f, 1f, 1f);
     }
-
-    float accTime = 0f;
 
     private void Update()
     {
-        accTime += Time.deltaTime;
-        if (accTime >= 0.1f)
-        {
-            accTime -= 0.1f;
-            if(_pizzas.Count > 0)
-            {
-                Push(_pizzas[_pizzas.Count - 1]);
-                _pizzas.Remove(_pizzas[_pizzas.Count - 1]);
-            }
-        }
     }
 
-    public void Push(GameObject gameObject)
+    public bool Push(GameObject gameObject)
     {
         if (null == gameObject)
-            return;
+        {
+            return false;
+        }
+
+        Define.ItemType newItemType = Managers.Item.GetType(gameObject);
+        if (!IsEmpty &&
+            newItemType != ItemType)
+        {
+            return false;
+        }
+
+        ItemType = newItemType;
 
         Transform parent = transform;
-        if (_stack.Count > 0)
+        if (!IsEmpty)
+        {
             parent = _stack.Peek().transform;
+        }
 
         gameObject.transform.SetParent(parent, true);
         //  TODO: Scale 깨지는 버그있음 이유 모름 스케일따로 안건드는데
@@ -98,18 +94,18 @@ public class Stacker : MonoBehaviour
         StartCoroutine(Co_Lean(Quaternion.identity, 0.1f, 0f));
 
         _stack.Push(gameObject);
+        return true;
     }
 
     public GameObject Pop(Transform parent = null) 
     {
-        if(_stack.Count == 0) 
+        if(IsEmpty)
+        {
             return null;
+        }
 
         GameObject gameObject = _stack.Pop();
         gameObject.transform.parent = parent;
-
-        if(Count > 0)
-            _stack.Peek().transform.parent = transform;
 
         return gameObject;
     }
