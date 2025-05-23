@@ -20,6 +20,7 @@ namespace Define
     {
         Pizza,
         Trash,
+        Money,
         END,
     }
 
