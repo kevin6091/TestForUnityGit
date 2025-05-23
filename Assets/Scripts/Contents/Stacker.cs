@@ -65,7 +65,6 @@ public class Stacker : MonoBehaviour
         _offsetFromParent.y = 0.1f;
         _offsetFromObject = new Vector3(0f, 1f, 1f);
 
-
     }
 
     float accTime = 0f;
@@ -107,8 +106,13 @@ public class Stacker : MonoBehaviour
         if(_stack.Count == 0) 
             return null;
 
-        _stack.Peek().transform.parent = parent;
-        return _stack.Pop();
+        GameObject gameObject = _stack.Pop();
+        gameObject.transform.parent = parent;
+
+        if(Count > 0)
+            _stack.Peek().transform.parent = transform;
+
+        return gameObject;
     }
 
 
