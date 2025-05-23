@@ -28,6 +28,8 @@ public class StandController : ProbController
         ProbType = Define.ProbType.Stand;
         State = Define.State.Idle;
 
+        WaitingLine.topReachedEvents += OnWaitingLineTopReached;
+
         //  Todo : Refactoring
         WaitingLine.Offset = WaitingLine.transform.forward * -1f * 2f;
 
@@ -38,50 +40,8 @@ public class StandController : ProbController
         }
     }
 
-    public IEnumerator Co_TransferStackingObjectToWaiting(float time)
+    private void OnWaitingLineTopReached()
     {
-        float accTime = 0f;
 
-        while (true)
-        {
-            accTime += Time.deltaTime;
-
-            if (accTime >= time)
-            {
-                accTime -= time;
-
-                if (IsStackerEmpty ||
-                    IsWaitingLineEmpty ||
-                    WaitingLine.IsTopReached() == false)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                GameObject gameObject = Stacker.Pop();
-                CreatureController creature = WaitingLine.Dequeue();
-                CustomerController customer = creature as CustomerController;
-                if (customer == null)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                if(customer.Stacker.Push(gameObject) == false)
-                {
-                    yield return null;
-                    continue;
-                }    
-
-                ProbController nearestProb = Managers.Prob.GetNearestProb(Define.ProbType.Table, transform.position);
-
-                StartCoroutine(customer.Co_EatSequence((TableController)nearestProb));
-
-                //  customer.Target.TargetObj = nearestProb.gameObject;
-                //  customer.State = Define.State.Move;
-            }
-
-            yield return null;
-        }
     }
 }

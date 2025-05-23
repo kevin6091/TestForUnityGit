@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -17,6 +18,10 @@ public class Stacker : MonoBehaviour
     private Define.ItemType ItemType { get; set; } = Define.ItemType.END;
 
     private StackerState _state = StackerState.IDLE;
+
+    public Action popEvent;
+    public Action pushEvent;
+    public Action emptyEvent;
     
     public StackerState State 
     { 
@@ -94,6 +99,7 @@ public class Stacker : MonoBehaviour
         StartCoroutine(Co_Lean(Quaternion.identity, 0.1f, 0f));
 
         _stack.Push(gameObject);
+        pushEvent?.Invoke();
         return true;
     }
 
@@ -105,7 +111,13 @@ public class Stacker : MonoBehaviour
         }
 
         GameObject gameObject = _stack.Pop();
+        popEvent?.Invoke();
         gameObject.transform.parent = parent;
+
+        if (IsEmpty)
+        {
+            emptyEvent?.Invoke();
+        }
 
         return gameObject;
     }

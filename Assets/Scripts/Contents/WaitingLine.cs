@@ -13,6 +13,8 @@ public class WaitingLine : MonoBehaviour
     public int Count { get { return _lineObjects.Count; } }
     public bool IsEmpty { get { return Count == 0; } }
 
+    public Action topReachedEvents;
+
     public bool IsTopReached()
     {
         if (IsEmpty)
@@ -20,6 +22,16 @@ public class WaitingLine : MonoBehaviour
 
         CreatureController creature = _lineObjects.First.Value;
         return creature.IsReachedTarget();
+    }
+
+    public CreatureController Peek()
+    {
+        if(IsEmpty)
+        {
+            return null;
+        }
+
+        return _lineObjects.First();
     }
 
     public void Enqueue(CreatureController creature)

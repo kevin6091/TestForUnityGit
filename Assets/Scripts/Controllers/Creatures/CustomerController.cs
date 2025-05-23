@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,7 +9,7 @@ public class CustomerController : CreatureController
 {
     IKController _IKController = null;
     public Stacker Stacker { get; private set; } = null;
-    public Needs Needs { get; set; } = null;
+    public Needs<Define.ItemType> Needs { get; private set; } = null;
 
     public override void Init()
     {
@@ -17,9 +18,14 @@ public class CustomerController : CreatureController
         _IKController = gameObject.GetOrAddComponent<IKController>();
         Stacker = GetComponentInChildren<Stacker>();
 
+        Needs = new Needs<Define.ItemType>(Define.ItemType.Pizza, UnityEngine.Random.Range(3, 5));
+
         StateMachine.RegisterState<StateIdleCustomer>(Define.State.Idle, this);
         StateMachine.RegisterState<StateMoveCustomer>(Define.State.Move, this);
         StateMachine.RegisterState<StateEatCustomer>(Define.State.Eat, this);
+
+        Stacker.pushEvent -= OnStackerPush;
+        Stacker.pushEvent += OnStackerPush;
 
         State = Define.State.Idle;
 
@@ -32,6 +38,16 @@ public class CustomerController : CreatureController
                 _IKController.RightHandTarget = transform.GetChild(i).gameObject.GetComponent<Stacker>().RightHandSocket;
                 break;
             }
+        }
+    }
+
+    private void OnStackerPush()
+    {
+        Needs.AquireNeed();
+
+        if (Needs.IsEnough)
+        {
+            StartCoroutine(Co_FindEmptyTable());            
         }
     }
 
@@ -57,11 +73,33 @@ public class CustomerController : CreatureController
         }
     }
 
-    public IEnumerator Co_EatSequence(TableController targetTable)
+    public IEnumerator Co_FindEmptyTable()
     {
-        Target.TargetObj = targetTable._holders[0].gameObject;
+        while(true)
+        {
+            ProbController nearestProb = Managers.Prob.GetNearestProb(Define.ProbType.Table, transform.position, TableController.HasEmptySeat);
+            if(nearestProb != null)
+            {
+                TableController table = nearestProb as TableController;
+                ObjectHolder emptySeat = table.GetEmptySeat();
+                if (emptySeat != null)
+                {
+                    StartCoroutine(Co_EatSequence(table, emptySeat));
+                    yield break;
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    public IEnumerator Co_EatSequence(TableController table, ObjectHolder emptySeat)
+    {
+        Target.TargetObj = emptySeat.gameObject;
         Target.Range = 1f;
         State = Define.State.Move;
+
+        emptySeat.HoldObject = gameObject;
 
         while(true)
         {
@@ -77,24 +115,33 @@ public class CustomerController : CreatureController
 
         while(!Stacker.IsEmpty)
         {
-            targetTable.Stacker.Push(Stacker.Pop());
+            table.Stacker.Push(Stacker.Pop());
         }
 
-        float accTime = 0f;
 
         State = Define.State.Eat;
-        Agent.Warp(targetTable.transform.position);
-        //  Agent.isStopped = false;
-        Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        float accTime = 0f;
 
-        while (!targetTable.Stacker.IsEmpty)
+        while (true)
         {
             accTime += Time.deltaTime;
             if(accTime >= 3f)
             {
                 accTime -= 3f;
-                GameObject eatObject = targetTable.Stacker.Pop();
-                Managers.Item.DestoyItem(eatObject);
+                GameObject eatObject = table.Stacker.Pop();
+                if(eatObject != null)
+                {
+                    Managers.Item.DestoyItem(eatObject);
+                }
+
+                if(table.Stacker.IsEmpty)
+                {
+                    ProbController nearestStand = Managers.Prob.GetNearestProb(Define.ProbType.Stand, transform.position);
+                    (nearestStand as StandController).WaitingLine.Enqueue(this);
+                    Needs = new Needs<Define.ItemType>(Define.ItemType.Pizza, UnityEngine.Random.Range(3, 5));
+                    emptySeat.HoldObject = null;
+                    yield break;
+                }
             }
 
             yield return null;

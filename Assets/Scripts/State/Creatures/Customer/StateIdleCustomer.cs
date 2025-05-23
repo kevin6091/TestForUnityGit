@@ -16,6 +16,7 @@ public class StateIdleCustomer : StateCustomer
     public override void Execute()
     {
         base.Execute();
+        Context.UpdateArm();
     }
 
     public override void Exit()
