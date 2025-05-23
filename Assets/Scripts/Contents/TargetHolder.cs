@@ -6,7 +6,9 @@ using UnityEngine.UIElements;
 
 public class TargetHolder : MonoBehaviour
 {
-    public GameObject TargetObj { get; set; } = null;
+    [SerializeField]
+    private GameObject _targetobj = null;
+    public GameObject TargetObj { get { return _targetobj; } set { _targetobj = value; } }
     public Vector3 Offset { get; set; } = Vector3.zero;
     public float Range { get; set; } = 0.0f;
 
