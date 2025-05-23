@@ -32,13 +32,14 @@ public class StateIdleGenerator : StateGenerator
         while(true)
         {
             yield return new WaitForSeconds(Context.GenerateSpeed);
-            GameObject gameObject = Managers.Resource.Instantiate("Foods/Pizza");
+            
+            GameObject gameObject = Managers.Item.CreateItem(Define.ItemType.Pizza).gameObject;
             gameObject.transform.position = Context.transform.position;
             Context.Stacker.Push(gameObject);
+
             if (Context.Stacker.Count >= Context.MaxCount)
             {
                 Context.State = Define.State.Wait;
-                
             }
         }
 
