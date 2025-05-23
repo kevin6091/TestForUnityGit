@@ -12,8 +12,8 @@ public class WorkMediator : BaseManager
         if(work != null && employee != null)
         {
             // 알바를 Work로 이동시키는 코루틴 실행
-            CoroutineHelper.CoOutInfo outInfo =  CoroutineHelper.MyStartCoroutine(work, work.Co_MoveToWorkRoutine(employee.transform, employee.Stat.MoveSpeed));
-            CoroutineHelper.MyStartCoroutine(work, work.Co_CheckIsWorking(employee.WorkEscapeRoutine(), outInfo.OutRoutine));
+            //  CoroutineHelper.CoOutInfo outInfo =  CoroutineHelper.MyStartCoroutine(work, work.Co_MoveToWorkRoutine(employee.transform, employee.Stat.MoveSpeed));
+            //  CoroutineHelper.MyStartCoroutine(work, work.Co_CheckIsWorking(employee.WorkEscapeRoutine(), outInfo.OutRoutine));
         }
     }
 }

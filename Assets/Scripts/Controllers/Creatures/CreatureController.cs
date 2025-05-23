@@ -86,7 +86,6 @@ public abstract class CreatureController : MonoBehaviour
             if (Target.DirectionXZ(out Vector3 dir) == false ||
                 IsReachedTarget())
             {
-                CoroutineHelper.RemoveCoroutineDict(this, Co_MoveToTarget());
                 yield break;
             }
 

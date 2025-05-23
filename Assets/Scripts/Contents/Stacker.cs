@@ -61,8 +61,6 @@ public class Stacker : MonoBehaviour
         _offsetFromParent.y = 0.1f;
     }
 
-    float accTime = 0f;
-
     private void Update()
     {
     }
