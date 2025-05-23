@@ -6,6 +6,7 @@ using UnityEngine.AI;
 
 public abstract class ProbController : MonoBehaviour
 {
+
     protected StateMachine _stateMachine = null;
     public StateMachine StateMachine { get { return _stateMachine; } private set { _stateMachine = value; } }
     public NavMeshObstacle Obstacle { get; private set; } = null;
@@ -18,12 +19,12 @@ public abstract class ProbController : MonoBehaviour
         set { _stateMachine.ChangeState(value); }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         Init();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         StateMachine.Execute();
     }

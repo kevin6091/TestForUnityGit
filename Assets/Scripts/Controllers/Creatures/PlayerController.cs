@@ -11,7 +11,9 @@ using UnityEngine.AI;
 public class PlayerController : CreatureController
 {
     private IKController _IKController = null;
-    private Stacker _stacker = null;
+    public Stacker _stacker { get; private set; } = null;
+
+    public int MaxCount { get; set; } = 6;  // 추후에 수정 요망
 
     public override void Init()
     {
@@ -61,17 +63,6 @@ public class PlayerController : CreatureController
         NavMeshAgent nma = GetComponent<NavMeshAgent>();
         nma.Move(dir * Time.deltaTime * Stat.MoveSpeed);
         transform.rotation = Quaternion.LookRotation(dir);
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-
-            Debug.Log("StartCoroutine2");
-            StartCoroutine("Co_Test"); 
-            Debug.Log("StartCoroutine After");
-        }
     }
 
     public void OnKeyboard()
