@@ -21,7 +21,7 @@ public class GameScene : BaseScene
         TestInit();
         StartCoroutine(Co_Test());
 
-        GamePlayer = GameObject.Find("UnityChan").GetComponent<PlayerController>();
+        GamePlayer = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     public override void Clear()
