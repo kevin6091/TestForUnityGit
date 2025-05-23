@@ -65,11 +65,7 @@ public class Stacker : MonoBehaviour
         _offsetFromParent.y = 0.1f;
         _offsetFromObject = new Vector3(0f, 1f, 1f);
 
-        if(tag != "Table")
-        {
-            for(int i = 0; i < 30; ++i)
-                _pizzas.Add(Managers.Resource.Instantiate("Foods/Pizza"));
-        }
+
     }
 
     float accTime = 0f;
