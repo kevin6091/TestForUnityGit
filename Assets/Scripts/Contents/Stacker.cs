@@ -15,7 +15,7 @@ public class Stacker : MonoBehaviour
 
     public Transform LeftHandSocket { get; private set; } = null;
     public Transform RightHandSocket { get; private set; } = null;
-    private Define.ItemType ItemType { get; set; } = Define.ItemType.END;
+    public Define.ItemType ItemType { get; private set; } = Define.ItemType.END;
 
     private StackerState _state = StackerState.IDLE;
 
