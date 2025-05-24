@@ -46,10 +46,8 @@ public class Buger : Work
             if (employeeWorkDoneRoutine != null)
                 StartCoroutine(employeeWorkDoneRoutine);
             Managers.Resource.Instantiate("Test/WorkDoneParticle", transform);
-        }
-
-        if(Worker == Define.Worker.Employee)
             AddWork();
+        }
 
         LeaveWork();
 
@@ -58,7 +56,7 @@ public class Buger : Work
 
     protected override void OnTriggerEnter(Collider other)
     {
-        CheckPlayer();
+        base.OnTriggerEnter(other);
     }
 
     protected override void OnTriggerStay(Collider other)
@@ -68,6 +66,6 @@ public class Buger : Work
 
     protected override void OnTriggerExit(Collider other)
     {
-        LeaveWork();
+        base.OnTriggerExit(other);
     }
 }

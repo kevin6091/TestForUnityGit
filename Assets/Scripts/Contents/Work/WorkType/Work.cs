@@ -50,7 +50,6 @@ public abstract class Work : MonoBehaviour
                 {
                     StartCoroutine(employeeEscapeRoutine);
                     StopCoroutine(MoveToWorkCoroutine);
-                    AddWork();
                 }
                 else if (Worker == Define.Worker.Employee) // 알바가 뺏기지 않고 일에 도착했다.
                 {
@@ -105,7 +104,7 @@ public abstract class Work : MonoBehaviour
         IsWorkDone = false;
     }
 
-    protected abstract void OnTriggerEnter(Collider other);
-    protected abstract void OnTriggerStay(Collider other);
-    protected abstract void OnTriggerExit(Collider other);
+    protected virtual void OnTriggerEnter(Collider other) { CheckPlayer(); }
+    protected virtual void OnTriggerStay(Collider other) { }
+    protected virtual void OnTriggerExit(Collider other)  { LeaveWork(); AddWork(); }
 }
